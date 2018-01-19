@@ -1,0 +1,120 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-geo">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      paper-button.indigo {
+        background-color: var(--paper-indigo-500);
+        color: white;
+      }
+
+      google-map {
+        height: 300px;
+      }
+
+      #gmd {
+        height: 100px;
+      }
+      
+    </style>
+
+    <div class="card" id="geoCard">
+      <div class="circle">4</div>
+      <h1>Geo Demo</h1>
+      <p>Let me find your location for you.</p>
+      <google-map id='gm' map="{{map}}" api-key="AIzaSyDMFQM5PWXsokAe7BfKSNKD_KJz5uWzyEk">
+
+        <template is="dom-repeat" items="{{results}}" as="marker">
+          <google-map-marker latitude="{{marker.latitude}}"
+                             longitude="{{marker.longitude}}">
+            <h2>{{marker.name}}</h2>
+            <span>{{marker.formatted_address}}</span>
+          </google-map-marker>
+        </template>
+
+      </google-map>
+      <google-map-directions id='gmd' map="[[map]]" api-key="AIzaSyDMFQM5PWXsokAe7BfKSNKD_KJz5uWzyEk"></google-map-directions>
+      <google-map-search id='gms' map="[[map]]" results="{{results}}"></google-map-search>
+      
+
+      <p><paper-button raised class='indigo' on-click="getGeo">Get Location</paper-button>
+      <paper-button raised class='indigo' on-click="navToTheMall">Nav To The Mall</paper-button>
+      <paper-button raised class='indigo' on-click="showPlacesOfInterest">Places of Interest</paper-button></p>
+      
+    </div>
+
+    <paper-toast id="toast" text="{{toastText}}" horizontalAlign="right"></paper-toast>
+
+  </template>
+
+  <script>
+    class Geo extends Polymer.Element {
+
+      static get is() { return 'my-geo'; }
+
+      static get properties() {
+        return {
+          map: Object,
+          results: Object,
+          toastText: String
+        }
+      }
+
+      getGeo() {
+        
+        var that = this;
+        navigator.geolocation.getCurrentPosition(function (location) {
+          console.log(location);
+          that.toastText =location.coords;
+          that.$.toast.open();
+          
+          var gmap = that.$.gm; // document.getElementById('gm') won't work https://stackoverflow.com/questions/24627076/using-queryselector-to-find-nested-elements-inside-a-polymer-template-returns-nu;
+          gmap.latitude = location.coords.latitude;
+          gmap.longitude = location.coords.longitude;
+
+          var marker = document.createElement('google-map-marker');
+          marker.setAttribute('latitude', location.coords.latitude);
+          marker.setAttribute('longitude', location.coords.longitude);
+          marker.innerHTML = 'You are here';
+          gmap.appendChild(marker);
+
+        });
+        
+      }
+
+      navToTheMall() {
+        var gmd = this.$.gmd;
+        gmd.startAddress = '2 Moorehead Place, Latham. ACT, Australia';
+        gmd.endAddress = 'Westfield Belconnen, Belconnen. ACT. Australia';
+        gmd.travelMode = 'DRIVING';
+
+      }
+
+      showPlacesOfInterest() {
+        var gms = this.$.gms;
+        gms.types = 'restaurant';
+        gms.query = 'food';
+        gms.search();
+      }
+    }
+
+    window.customElements.define(Geo.is, Geo);
+  </script>
+</dom-module>
