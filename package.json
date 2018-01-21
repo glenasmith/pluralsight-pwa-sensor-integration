@@ -1,6 +1,6 @@
 {
-  "name": "polymer-starter-kit",
-  "license": "BSD-3-Clause",
+  "name": "sights-and-sounds-pwa-sensor-demo",
+  "author": "Glen Smith <glen@bytecode.com.au>",
   "devDependencies": {
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.7.0",

@@ -1,7 +1,7 @@
 {
-  "name": "polymer-starter-kit",
+  "name": "sights-and-sounds-pwa-sensor-demo",
   "authors": [
-    "The Polymer Authors"
+    "Glen Smith <glen@bytecode.com.au>"
   ],
   "license": "https://polymer.github.io/LICENSE.txt",
   "dependencies": {
