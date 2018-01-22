@@ -73,6 +73,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
         font-weight: bold;
       }
+
+      #router-outlet {
+
+      }
+
+
     </style>
 
     <app-location
@@ -90,16 +96,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
       <!-- Main content -->
-      <app-header-layout has-scrolling-region>
+      <app-header-layout fullbleed reveals>
 
         <app-header slot="header" condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" on-tap="_onTap" drawer-toggle></paper-icon-button>
             <div main-title>Sights and Sounds</div>
+            <paper-icon-button icon="delete"></paper-icon-button>
+            <paper-icon-button icon="search"></paper-icon-button>
+            <paper-icon-button icon="close"></paper-icon-button>
           </app-toolbar>
         </app-header>
 
-        <app-drawer-layout fullbleed narrow="{{narrow}}">
+        <app-drawer-layout narrow="{{narrow}}">
           <!-- Drawer content -->
           <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
             <app-toolbar>Menu</app-toolbar>
@@ -111,8 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             </iron-selector>
           </app-drawer>
-          <div>
-            <iron-pages
+            <iron-pages id="router-outlet"
                     selected="[[page]]"
                     attr-for-selected="name"
                     fallback-selection="view404"
@@ -123,7 +131,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <my-geo name="geo"></my-geo>
               <my-view404 name="view404"></my-view404>
             </iron-pages>
-          </div>
 
         </app-drawer-layout>
 
