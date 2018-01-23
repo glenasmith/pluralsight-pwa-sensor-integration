@@ -2,5 +2,6 @@ bower_components/
 node_modules/
 build/
 pages/
+public/
 .idea/
 *.log
