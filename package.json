@@ -11,7 +11,7 @@
     "shx": "0.2.2"
   },
   "scripts": {
-    "404": "shx cp build/es6-bundled/index.html build/es6-bundled/404.html",
+    "404": "shx cp build/es5-bundled/index.html build/es5-bundled/404.html",
     "bower:install": "bower install --allow-root",
     "lint": "npm run lint:javascript && polymer lint",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
@@ -19,6 +19,6 @@
     "test:integration": "polymer build # test that psk builds without error with the CLI",
     "build": "polymer build",
     "https": "http-server -p 8443 --ssl -C ssl/cert.pem -K ssl/key.pem",
-    "dist-gitlab": "shx cp -R build/es6-bundled public/"
+    "dist-gitlab": "shx cp -R build/es5-bundled public/"
   }
 }
