@@ -1,7 +1,7 @@
 {
-  "name": "My App",
-  "short_name": "My App",
-  "description": "My App description",
+  "name": "Sights and Sounds",
+  "short_name": "Sights and Sounds",
+  "description": "A travel companion app using the modern web",
   "icons": [
     {
       "src": "images/manifest/icon-192x192.png",

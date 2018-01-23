@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/google-chart/google-chart.html">
 
 <dom-module id="my-environment">
   <template>
@@ -24,15 +25,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="card">
       <div class="circle">3</div>
       <h1>Environment</h1>
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam, est id tempor laoreet.Pro saepe pertinax ei, ad pri animal labores suscipiantur.</p>
+
+      Network is: <paper-toggle-button id="networkStatus" ></paper-toggle-button>
+
+      <!--
+      <google-chart
+              type='pie'
+              options='{"title": "Distribution of days in 2001Q1"}'
+              cols='[{"label":"Month", "type":"string"}, {"label":"Days", "type":"number"}]'
+              rows='[["Jan", 31],["Feb", 28],["Mar", 31]]'>
+      </google-chart>
+      -->
+
     </div>
   </template>
 
   <script>
     class MyEnvironment extends Polymer.Element {
+
       static get is() { return 'my-environment'; }
+
+      ready() {
+          super.ready();
+          this.setupNetworkStatusListening();
+          this.setupBatteryListening();
+      }
+
+      setupNetworkStatusListening() {
+
+          var netStatusListener = this.handleNetworkStateChange.bind(this);
+
+          window.addEventListener('online', netStatusListener);
+          window.addEventListener('offline', netStatusListener);
+
+          // for the first time, let's set the initial state of the control
+          this.handleNetworkStateChange();
+      }
+
+      handleNetworkStateChange() {
+          console.log("State change happened");
+          this.$.networkStatus.checked = navigator.onLine;
+      }
+
+
+      setupBatteryListening() {
+
+      }
+
+      handleBatteryStateChange() {
+
+      }
+
     }
+
+
 
     window.customElements.define(MyEnvironment.is, MyEnvironment);
   </script>

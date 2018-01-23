@@ -1,0 +1,19 @@
+image: node:6.11.0
+
+pages:
+  cache:
+    paths:
+    - node_modules/
+    - bower_components/
+
+  script:
+  - npm install
+  - bower install
+  - npm run 404
+  - npm run dist-gitlab
+
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

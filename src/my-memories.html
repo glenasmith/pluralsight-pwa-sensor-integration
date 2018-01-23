@@ -10,30 +10,162 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/photo-gallery/photo-gallery.html">
+
 
 <dom-module id="my-memories">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
 
-        padding: 10px;
-      }
-    </style>
+                padding: 10px;
 
-    <div class="card">
-      <div class="circle">2</div>
-      <h1>Memories</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
-  </template>
+            }
 
-  <script>
-    class MyMemories extends Polymer.Element {
-      static get is() { return 'my-memories'; }
-    }
+            paper-tabs {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                font-size: larger;
+                text-transform: uppercase;
+                margin-bottom: 1px;
+                background-color: #5D7AF2;
+                color: white;
+            }
 
-    window.customElements.define(MyMemories.is, MyMemories);
-  </script>
+            #photoCanvas {
+                width: 800px;
+                height: 600px;
+            }
+
+        </style>
+
+        <div class="card">
+            <paper-tabs selected="{{selected}}" scrollable fit-container>
+                <paper-tab>Album</paper-tab>
+                <paper-tab>Photo</paper-tab>
+                <paper-tab>Video</paper-tab>
+                <paper-tab>Audio</paper-tab>
+            </paper-tabs>
+
+            <iron-pages selected="{{selected}}">
+                <div>
+                    <h1>Recent Album</h1>
+
+                    <photo-gallery height='120'>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1500487003906-9baadc8d610d?auto=compress,format&fit=crop&w=334&h=&q=80&aspect-ratio=0.67'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1483653085484-eb63c9f02547?auto=compress,format&fit=crop&w=750&h=&q=80&aspect-ratio=1.50'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1499958919714-e10d2741a387?auto=compress,format&fit=crop&w=334&h=&q=80&aspect-ratio=0.67'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1503263892381-7f7fd5e5ec15?auto=compress,format&fit=crop&w=376&h=&q=80&aspect-ratio=0.75'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1429554429301-1c7d5ae2d42e?auto=compress,format&fit=crop&w=750&h=&q=80&aspect-ratio=1.50'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1501422955948-a75c84b11ecf?auto=compress,format&fit=crop&w=752&h=&q=80&aspect-ratio=1.50'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1455796653466-32048b2b780e?auto=compress,format&fit=crop&w=749&h=&q=80&aspect-ratio=1.50'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1463414689943-2aca18b2242b?auto=compress,format&fit=crop&w=750&h=&q=80&aspect-ratio=1.78'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1428976365951-b70e0fa5c551?auto=compress,format&fit=crop&w=750&h=&q=80&aspect-ratio=1.50'></div>
+                        <div class='item'
+                             data-url='https://images.unsplash.com/photo-1500284306430-8f3cad668bb2?auto=compress,format&fit=crop&w=750&h=&q=80&aspect-ratio=1.50'></div>
+                    </photo-gallery>
+
+                </div>
+                <div>
+
+                    <h1>Take a Snap</h1>
+
+                    <div id="takePhotoControls">
+                        <video id="photoPreview" controls autoplay></video>
+                        <paper-fab icon="image:add-a-photo" on-click="takePicture"></paper-fab>
+                    </div>
+                    <div id="editPhotoControls">
+                        <canvas id="photoCanvas"></canvas>
+                        <paper-fab icon="delete" on-click="deletePicture"></paper-fab>
+                        <paper-fab icon="done" on-click="savePicture"></paper-fab>
+                    </div>
+
+                </div>
+                <div>Video</div>
+                <div>Audio</div>
+            </iron-pages>
+
+        </div>
+    </template>
+
+    <script>
+        class MyMemories extends Polymer.Element {
+            static get is() {
+                return 'my-memories';
+            }
+
+            static get properties() {
+                return {
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    toastText: String
+                }
+            }
+
+            ready() {
+                super.ready();
+                this.setupPhotoCapture();
+            }
+
+            setupPhotoCapture() {
+
+                const photoPreview = this.$.photoPreview;
+
+                this.togglePhotoCaptureControls(true); // turn them on
+
+
+                const constraints = {
+                    video: true,
+                };
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        photoPreview.srcObject = stream;
+                    });
+
+            }
+
+            togglePhotoCaptureControls(displayCaptureControls) {
+
+                this.$.takePhotoControls.style.display = displayCaptureControls ? 'inline' : 'none';
+                this.$.editPhotoControls.style.display = displayCaptureControls ? 'none' : 'inline';
+
+            }
+
+            takePicture() {
+                const photoPreview = this.$.photoPreview;
+                const photoCanvas = this.$.photoCanvas;
+                const photoContext = photoCanvas.getContext('2d');
+
+                photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
+                // TODO photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+                this.togglePhotoCaptureControls(false);
+
+                // photoCanvas.style.display = 'inline';
+                // photoPreview.style.display = 'none';
+
+
+                console.log(photoCanvas);
+            }
+
+            deletePicture() {
+                this.togglePhotoCaptureControls(true);
+            }
+        }
+
+        window.customElements.define(MyMemories.is, MyMemories);
+    </script>
 </dom-module>
