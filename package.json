@@ -10,6 +10,7 @@
     "shx": "0.2.2"
   },
   "scripts": {
+    "bower:install": "bower install",
     "404": "shx cp build/es6-bundled/index.html build/es6-bundled/404.html",
     "lint": "npm run lint:javascript && polymer lint",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
