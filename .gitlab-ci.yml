@@ -9,6 +9,7 @@ pages:
   script:
   - npm install
   - npm run bower:install
+  - npm run build
   - npm run 404
   - npm run dist-gitlab
 
