@@ -7,11 +7,12 @@
     "eslint-config-google": "^0.7.0",
     "eslint-plugin-html": "^2.0.0",
     "http-server": "0.11.1",
+    "polymer-cli": "^1.5.7",
     "shx": "0.2.2"
   },
   "scripts": {
-    "bower:install": "bower install --allow-root",
     "404": "shx cp build/es6-bundled/index.html build/es6-bundled/404.html",
+    "bower:install": "bower install --allow-root",
     "lint": "npm run lint:javascript && polymer lint",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
