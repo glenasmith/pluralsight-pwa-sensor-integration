@@ -12,3 +12,6 @@ Why Polymer?
 * Component oriented (like React, Angular, Vue, Aurelia)
 * (Mostly) Straight JavaScript (plus Shadow-dom and click events)
 
+Serving up over SSL
+
+Where you can get to the demo app (over SSL)
