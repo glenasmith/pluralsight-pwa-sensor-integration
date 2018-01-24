@@ -26,8 +26,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="circle">3</div>
       <h1>Environment</h1>
 
-      Network is: <paper-toggle-button id="networkStatus" ></paper-toggle-button>
-
       <!--
       <google-chart
               type='pie'
@@ -47,25 +45,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       ready() {
           super.ready();
-          this.setupNetworkStatusListening();
           this.setupBatteryListening();
       }
 
-      setupNetworkStatusListening() {
 
-          var netStatusListener = this.handleNetworkStateChange.bind(this);
-
-          window.addEventListener('online', netStatusListener);
-          window.addEventListener('offline', netStatusListener);
-
-          // for the first time, let's set the initial state of the control
-          this.handleNetworkStateChange();
-      }
-
-      handleNetworkStateChange() {
-          console.log("State change happened");
-          this.$.networkStatus.checked = navigator.onLine;
-      }
 
 
       setupBatteryListening() {
