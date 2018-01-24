@@ -24,7 +24,8 @@
     "photo-gallery": "supachailllpay/photo-gallery#^2.0.4",
     "google-chart": "GoogleWebComponents/google-chart#^2.0.0",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
-    "paper-fab": "PolymerElements/paper-fab#^2.0.0"
+    "paper-fab": "PolymerElements/paper-fab#^2.0.0",
+    "polymerfire": "firebase/polymerfire#^2.2.1"
   },
   "resolutions": {
     "polymer": "^2.0.0"

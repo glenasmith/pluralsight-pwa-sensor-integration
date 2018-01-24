@@ -1,0 +1,67 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="ss-login-status">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <span>
+      <iron-icon icon="lock" hidden$="[[!signedIn]]" on-click="startSignOut"></iron-icon>
+      <iron-icon icon="lock-open" hidden$="[[signedIn]]" on-click="startSignIn"></iron-icon>
+    </span>
+  </template>
+
+  <script>
+    class LoginStatus extends Polymer.Element {
+
+      static get is() { return 'ss-login-status'; }
+
+      static get properties() {
+          return {
+              signedIn: {
+                  type: Boolean,
+                  notify: true,
+                  value: false
+              }
+
+          }
+      }
+
+      ready() {
+          super.ready();
+          console.log("Signed in is: ", this.signedIn);
+      }
+
+      startSignIn() {
+          this.dispatchEvent(new CustomEvent('start-sign-in', {detail: {kicked: true}}));
+      }
+
+      startSignOut() {
+          this.dispatchEvent(new CustomEvent('start-sign-out', {detail: {kicked: true}}));
+      }
+
+
+
+    }
+
+
+
+    window.customElements.define(LoginStatus.is, LoginStatus);
+  </script>
+</dom-module>
