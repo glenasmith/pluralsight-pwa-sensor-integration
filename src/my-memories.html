@@ -39,6 +39,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 height: 600px;
             }
 
+            #photoPreview {
+                max-width: 100%;
+                width: 100%;
+            }
+
         </style>
 
         <div class="card">
@@ -82,7 +87,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <h1>Take a Snap</h1>
 
                     <div id="takePhotoControls">
-                        <video id="photoPreview" controls autoplay></video>
+                        <video id="photoPreview" autoplay></video>
                         <paper-fab icon="image:add-a-photo" on-click="takePicture"></paper-fab>
                     </div>
                     <div id="editPhotoControls">
