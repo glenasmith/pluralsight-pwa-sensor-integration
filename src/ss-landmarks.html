@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-landmarks">
+<dom-module id="ss-landmarks">
   <template>
     <style include="shared-styles">
       :host {
@@ -65,9 +65,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class MyLandmarks extends Polymer.Element {
+    class SightsSoundsLandmarks extends Polymer.Element {
 
-      static get is() { return 'my-landmarks'; }
+      static get is() { return 'ss-landmarks'; }
 
       static get properties() {
         return {
@@ -115,6 +115,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     }
 
-    window.customElements.define(MyLandmarks.is, MyLandmarks);
+    window.customElements.define(SightsSoundsLandmarks.is, SightsSoundsLandmarks);
   </script>
 </dom-module>

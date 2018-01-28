@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/photo-gallery/photo-gallery.html">
 
 
-<dom-module id="my-memories">
+<dom-module id="ss-memories">
     <template>
         <style include="shared-styles">
             :host {
@@ -105,9 +105,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class MyMemories extends Polymer.Element {
+        class SightsSoundsMemories extends Polymer.Element {
             static get is() {
-                return 'my-memories';
+                return 'ss-memories';
             }
 
             static get properties() {
@@ -171,6 +171,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         }
 
-        window.customElements.define(MyMemories.is, MyMemories);
+        window.customElements.define(SightsSoundsMemories.is, SightsSoundsMemories);
     </script>
 </dom-module>

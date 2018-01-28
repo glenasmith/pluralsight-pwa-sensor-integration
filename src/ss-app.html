@@ -38,15 +38,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="my-icons.html">
 
-<link rel="lazy-import" href="my-landmarks.html">
-<link rel="lazy-import" href="my-memories.html">
-<link rel="lazy-import" href="my-reminders.html">
-<link rel="lazy-import" href="my-environment.html">
+<link rel="lazy-import" href="ss-landmarks.html">
+<link rel="lazy-import" href="ss-memories.html">
+<link rel="lazy-import" href="ss-reminders.html">
+<link rel="lazy-import" href="ss-environment.html">
 
 
-<link rel="lazy-import" href="my-view404.html">
+<link rel="lazy-import" href="ss-404.html">
 
-<dom-module id="my-app">
+<dom-module id="ss-app">
     <template>
         <style>
             :host {
@@ -169,14 +169,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-pages id="router-outlet"
                             selected="[[page]]"
                             attr-for-selected="name"
-                            fallback-selection="view404"
+                            fallback-selection="404"
                             role="main">
-                    <my-landmarks name="landmarks"></my-landmarks>
-                    <my-memories name="memories"></my-memories>
-                    <my-reminders name="reminders"></my-reminders>
-                    <my-environment name="environment"></my-environment>
+                    <ss-landmarks name="landmarks"></ss-landmarks>
+                    <ss-memories name="memories"></ss-memories>
+                    <ss-reminders name="reminders"></ss-reminders>
+                    <ss-environment name="environment"></ss-environment>
 
-                    <my-view404 name="view404"></my-view404>
+                    <ss-404 name="404"></ss-404>
                 </iron-pages>
 
             </app-drawer-layout>
@@ -204,9 +204,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class MyApp extends Polymer.Element {
+        class SightsSoundsApp extends Polymer.Element {
             static get is() {
-                return 'my-app';
+                return 'ss-app';
             }
 
             static get properties() {
@@ -271,7 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _pageChanged(page) {
                 // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+                var resolvedPageUrl = this.resolveUrl('ss-' + page + '.html');
                 Polymer.importHref(
                     resolvedPageUrl,
                     null,
@@ -284,10 +284,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _showPage404() {
-                this.page = 'view404';
+                this.page = '404';
             }
         }
 
-        window.customElements.define(MyApp.is, MyApp);
+        window.customElements.define(SightsSoundsApp.is, SightsSoundsApp);
     </script>
 </dom-module>

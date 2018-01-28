@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/google-chart/google-chart.html">
 
-<dom-module id="my-environment">
+<dom-module id="ss-environment">
   <template>
     <style include="shared-styles">
       :host {
@@ -39,9 +39,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class MyEnvironment extends Polymer.Element {
+    class SightsSoundsEnvironment extends Polymer.Element {
 
-      static get is() { return 'my-environment'; }
+      static get is() { return 'ss-environment'; }
 
       ready() {
           super.ready();
@@ -63,6 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-    window.customElements.define(MyEnvironment.is, MyEnvironment);
+    window.customElements.define(SightsSoundsEnvironment.is, SightsSoundsEnvironment);
   </script>
 </dom-module>
