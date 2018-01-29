@@ -38,6 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="my-icons.html">
 
+<link rel="lazy-import" href="ss-dashboard.html">
 <link rel="lazy-import" href="ss-landmarks.html">
 <link rel="lazy-import" href="ss-memories.html">
 <link rel="lazy-import" href="ss-reminders.html">
@@ -135,6 +136,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <app-toolbar>Menu</app-toolbar>
                     <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
 
+
+                        <a href="[[rootPath]]dashboard" name="dashboard" tabindex="-1">
+                            <paper-icon-item>
+                                <iron-icon icon="home" slot="item-icon"></iron-icon>
+                                <span>Dashboard</span>
+                            </paper-icon-item>
+                        </a>
+
                         <a href="[[rootPath]]landmarks" name="landmarks" tabindex="-1">
                             <paper-icon-item>
                                 <iron-icon icon="explore" slot="item-icon"></iron-icon>
@@ -169,6 +178,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             attr-for-selected="name"
                             fallback-selection="404"
                             role="main">
+                    <ss-dashboard name="dashboard"></ss-dashboard>
                     <ss-landmarks name="landmarks"></ss-landmarks>
                     <ss-memories name="memories"></ss-memories>
                     <ss-reminders name="reminders"></ss-reminders>
@@ -213,7 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         type: String,
                         reflectToAttribute: true,
                         observer: '_pageChanged',
-                        value: 'landmarks'
+                        value: 'dashboard'
                     },
                     routeData: Object,
                     subroute: String,
