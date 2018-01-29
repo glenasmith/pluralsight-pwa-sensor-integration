@@ -35,6 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="custom-components/network-status.html">
 <link rel="import" href="custom-components/login-status.html">
+<link rel="import" href="custom-components/avatar.html">
 
 <link rel="import" href="my-icons.html">
 
@@ -89,8 +90,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             .drawer-list a.iron-selected {
-                Xcolor: black;
-                Xfont-weight: bold;
                 background-color: #d1d1d1;
             }
 
@@ -100,6 +99,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             #router-outlet {
 
+            }
+
+            #avatar {
+                min-height: 5em;
+                padding-top: 3em;
+                background-color: gray; /* #4285F4; */
+                color: white;
+                min-width: 86%;
             }
 
 
@@ -133,7 +140,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-drawer-layout narrow="{{narrow}}">
                 <!-- Drawer content -->
                 <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-                    <app-toolbar>Menu</app-toolbar>
+                    <app-toolbar id="avatar">
+                        <ss-avatar id="avatarButton" user="[[user]]" signed-in="[[signedIn]]"></ss-avatar>
+                    </app-toolbar>
                     <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
 
 
@@ -246,6 +255,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var self = this;
                 this.$.loginStatus.addEventListener('start-sign-in', this.signIn.bind(self));
                 this.$.loginStatus.addEventListener('start-sign-out', this.signOut.bind(self));
+                this.$.avatarButton.addEventListener('start-sign-in', this.signIn.bind(self));
+                this.$.avatarButton.addEventListener('start-sign-out', this.signOut.bind(self));
             }
 
             signIn() {
@@ -254,10 +265,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 console.log(this.$);
 
                 this.$.auth.signInWithPopup()
-                    .then(function(response) {
+                    .then(function (response) {
                         console.log('Login was winning');
                         console.log(response.user);
-                    }).catch(function(error) {
+                    }).catch(function (error) {
                     console.error(error);
                 });
             }
