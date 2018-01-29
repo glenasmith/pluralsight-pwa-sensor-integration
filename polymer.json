@@ -1,12 +1,12 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/ss-app.html",
   "fragments": [
-    "src/my-landmarks.html",
-    "src/my-memories.html",
-    "src/my-reminders.html",
-    "src/my-environment.html",
-    "src/my-view404.html"
+    "src/ss-landmarks.html",
+    "src/ss-memories.html",
+    "src/ss-reminders.html",
+    "src/ss-sync.html",
+    "src/ss-404.html"
   ],
   "sources": [
     "src/**/*",
