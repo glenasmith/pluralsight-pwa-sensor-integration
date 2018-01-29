@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/paper-avatar/paper-avatar.html">
+
+
+<dom-module id="ss-avatar">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            paper-avatar {
+                float: left;
+                margin-right: 1em;
+            }
+
+            .userName {
+                line-height: 2.5em;
+            }
+        </style>
+
+        <span>
+      <template is="dom-if" if="{{user}}">
+        <paper-avatar on-click="startSignOut"
+                      image-src="[[user.photoURL]]"></paper-avatar>
+        <span class="userName">[[user.displayName]]</span>
+
+      </template>
+      <template is="dom-if" if="{{!user}}">
+        <paper-avatar on-click="startSignIn"></paper-avatar>
+        <span class="userName">Login</span>
+      </template>
+
+    </span>
+    </template>
+
+    <script>
+        class Avatar extends Polymer.Element {
+
+            static get is() {
+                return 'ss-avatar';
+            }
+
+            static get properties() {
+                return {
+                    signedIn: {
+                        type: Boolean,
+                        notify: true,
+                        value: false,
+                    },
+                    user: Object
+                };
+            }
+
+            ready() {
+                super.ready();
+                console.log(this.user);
+            }
+
+            startSignIn() {
+                this.dispatchEvent(new CustomEvent('start-sign-in', {detail: {kicked: true}}));
+            }
+
+            startSignOut() {
+                this.dispatchEvent(new CustomEvent('start-sign-out', {detail: {kicked: true}}));
+            }
+
+        }
+
+
+        window.customElements.define(Avatar.is, Avatar);
+    </script>
+</dom-module>
