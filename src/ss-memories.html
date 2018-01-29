@@ -2,6 +2,8 @@
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/photo-gallery/photo-gallery.html">
 
+<link rel="import" href="../bower_components/polymerfire/firebase-storage-ref.html">
+
 
 <dom-module id="ss-memories">
     <template>
@@ -40,6 +42,7 @@
             <paper-tabs selected="{{selected}}" scrollable fit-container>
                 <paper-tab>Album</paper-tab>
                 <paper-tab>Photo</paper-tab>
+                <paper-tab>Webcam</paper-tab>
                 <paper-tab>Video</paper-tab>
                 <paper-tab>Audio</paper-tab>
             </paper-tabs>
@@ -76,6 +79,21 @@
 
                     <h1>Take a Snap</h1>
 
+                    <firebase-storage-ref id="firebaseStorage"
+                            app="{{fbApp}}"
+                            path="{{fsPath}}"
+                            metadata="{{fsMetadata}}"
+                            storage-uri="{{fsStorage}}"
+                            download-url="{{fsDownload}}"
+                            >
+                    </firebase-storage-ref>
+
+                    <input id="photoUpload" type="file" accept="image/*" capture on-change="uploadPhotos" >
+                </div>
+                <div>
+
+                    <h1>Take a Snap</h1>
+
                     <div id="takePhotoControls">
                         <video id="photoPreview" autoplay></video>
                         <paper-fab icon="image:add-a-photo" on-click="takePicture"></paper-fab>
@@ -104,18 +122,47 @@
                 return {
                     selected: {
                         type: Number,
-                        value: 0
+                        value: 0,
                     },
-                    toastText: String
+                    fbApp: Object,
+                    fsMetadata: Object,
+                    fsPath: {
+                        type: String,
+                        value: '/photos',
+                    },
+                    fsStorage: {
+                        type: String,
+                        value: 'gs://sights-sounds-pwa.appspot.com/photos',
+                    },
+                    fsDownload: String,
+                    toastText: String,
                 };
             }
 
             ready() {
                 super.ready();
                 this.setupPhotoCapture();
+                console.log(this.fbApp);
             }
 
+            uploadPhotos(evt) {
+                console.log('Uploading file(s)');
+                var files = evt.target.files;
+
+                var fbs = this.$.firebaseStorage;
+                fbs.log = true;
+                if (files) {
+                    for (var f = 0; f < files.length; f++) {
+                        var file = files[f];
+                        console.log('Uploading ', file.name);
+                        var uploadTask = fbs.put(file);
+                    }
+                }
+    }
+
             setupPhotoCapture() {
+        // var self = this;
+                // this.$.photoUpload.addEventListener('change', (e) => this.uploadPhotos(e.target.files).bind(self))
 
                 const photoPreview = this.$.photoPreview;
 
@@ -130,15 +177,12 @@
                     .then((stream) => {
                         photoPreview.srcObject = stream;
                     });
-
-            }
+    }
 
             togglePhotoCaptureControls(displayCaptureControls) {
-
-                this.$.takePhotoControls.style.display = displayCaptureControls ? 'inline' : 'none';
+        this.$.takePhotoControls.style.display = displayCaptureControls ? 'inline' : 'none';
                 this.$.editPhotoControls.style.display = displayCaptureControls ? 'none' : 'inline';
-
-            }
+    }
 
             takePicture() {
                 const photoPreview = this.$.photoPreview;

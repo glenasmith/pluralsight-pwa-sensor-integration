@@ -185,7 +185,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             role="main">
                     <ss-dashboard name="dashboard"></ss-dashboard>
                     <ss-landmarks name="landmarks"></ss-landmarks>
-                    <ss-memories name="memories"></ss-memories>
+                    <ss-memories name="memories" fb-app="{{fbApp}}"></ss-memories>
                     <ss-reminders name="reminders"></ss-reminders>
                     <ss-sync name="sync"></ss-sync>
 
@@ -198,10 +198,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header-layout>
 
         <firebase-app
+                app="{{fbApp}}"
                 name="sites-sounds-pwa"
                 api-key="AIzaSyB67jjPo7VcqMiReThraBjLaggU8OXIOsQ"
                 auth-domain="sights-sounds-pwa.firebaseapp.com"
-                database-url="https://sights-sounds-pwa.firebaseio.com">
+                database-url="https://sights-sounds-pwa.firebaseio.com"
+                storage-bucket="sights-sounds-pwa.appspot.com">
         </firebase-app>
 
         <firebase-auth
@@ -237,6 +239,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     rootPath: String,
                     signedIn: Boolean,
                     user: Object,
+                    fbApp: {
+                        type: Object,
+                        notify: true
+                    }
                 };
             }
 
