@@ -137,7 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-toolbar>
             </app-header>
 
-            <app-drawer-layout narrow="{{narrow}}">
+            <app-drawer-layout id="drawerLayout" narrow="{{narrow}}">
                 <!-- Drawer content -->
                 <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
                     <app-toolbar id="avatar">
@@ -300,7 +300,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _onTap() {
-                this.$.drawer.toggle();
+                // Fix to expand content layout on collapse
+                // https://stackoverflow.com/questions/45890756/polymer-app-drawer-left-hanging-wrapper-when-closed-content-not-take-up-all-sp
+                var drawerLayout = this.$.drawerLayout;
+                if (drawerLayout.forceNarrow || !drawerLayout.narrow) {
+                    drawerLayout.forceNarrow = !drawerLayout.forceNarrow;
+                } else {
+                    drawerLayout.drawer.toggle();
+                }
             }
 
             _showPage404() {
