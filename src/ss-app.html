@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="ss-landmarks.html">
 <link rel="lazy-import" href="ss-memories.html">
 <link rel="lazy-import" href="ss-reminders.html">
-<link rel="lazy-import" href="ss-environment.html">
+<link rel="lazy-import" href="ss-sync.html">
 
 
 <link rel="lazy-import" href="ss-404.html">
@@ -157,10 +157,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </paper-icon-item>
                         </a>
 
-                        <a href="[[rootPath]]environment" name="environment" tabindex="-1">
+                        <a href="[[rootPath]]sync" name="sync" tabindex="-1">
                             <paper-icon-item>
                                 <iron-icon icon="perm-data-setting" slot="item-icon"></iron-icon>
-                                <span>Environment</span>
+                                <span>Sync</span>
                             </paper-icon-item>
                         </a>
 
@@ -174,7 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <ss-landmarks name="landmarks"></ss-landmarks>
                     <ss-memories name="memories"></ss-memories>
                     <ss-reminders name="reminders"></ss-reminders>
-                    <ss-environment name="environment"></ss-environment>
+                    <ss-sync name="environment"></ss-sync>
 
                     <ss-404 name="404"></ss-404>
                 </iron-pages>
@@ -215,6 +215,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         type: String,
                         reflectToAttribute: true,
                         observer: '_pageChanged',
+                        value: 'location'
                     },
                     routeData: Object,
                     subroute: String,
@@ -222,7 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     // Polymer.Element#rootPath
                     rootPath: String,
                     signedIn: Boolean,
-                    user: Object
+                    user: Object,
                 };
             }
 
@@ -240,21 +241,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             signIn() {
-                console.log("Starting signin");
+                console.log('Starting signin');
                 console.log(this);
                 console.log(this.$);
 
                 this.$.auth.signInWithPopup()
-                    .then(function (response) {
-                        console.log("Login was winning");
+                    .then(function(response) {
+                        console.log('Login was winning');
                         console.log(response.user);
-                    }).catch(function (error) {
-                    console.error(error)
+                    }).catch(function(error) {
+                    console.error(error);
                 });
             }
 
             signOut() {
-                console.log("Logout was winning");
+                console.log('Logout was winning');
                 this.$.auth.signOut();
             }
 
