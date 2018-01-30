@@ -71,7 +71,12 @@ Then pipe that into an <audio> element and you're off
 
 Visualise on a cool audio element
 
+## Canvas Gotchas
 
+* Remember to set canvas height and width (or things get blurring/downsampled). And I don't mean CSS width, I mean the canvas.width of the object)
 
+* There is a experimental Photo API called ImageCapture - but it's not in any browsers except Chrome (behind a flag?) -- https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture
+
+* You can [request full screen mode](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) if you want the video element to take up all the real estate. Then perhaps use a click to take the pic? 
 
 

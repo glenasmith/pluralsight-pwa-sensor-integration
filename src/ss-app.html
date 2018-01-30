@@ -21,10 +21,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<!-- <link rel="import" href="../bower_components/paper-item/paper-icon-item.html"> -->
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
@@ -33,7 +34,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
 <link rel="import" href="custom-components/network-status.html">
-<link rel="import" href="custom-components/login-status.html">
 <link rel="import" href="custom-components/avatar.html">
 
 <link rel="lazy-import" href="ss-dashboard.html">
@@ -101,13 +101,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             #avatar {
                 min-height: 5em;
                 padding-top: 3em;
-                background-color: gray; /* #4285F4; */
+                background-color: #4285F4; /* gray; */
                 color: white;
                 min-width: 86%;
             }
 
 
+
+            #tabsForMenu {
+                min-width: 70%;
+                text-transform: uppercase;
+            }
+
+            #appLogo {
+                height: 2em;
+                margin-right: 1em;
+            }
+
         </style>
+
+        <iron-media-query query="min-width: 1000" query-matches="{{wideLayout}}"></iron-media-query>
 
         <app-location
                 route="{{route}}"
@@ -127,18 +140,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <app-header slot="header" fixed effects="waterfall">
                 <app-toolbar>
-                    <paper-icon-button icon="menu" on-tap="_onTap" drawer-toggle></paper-icon-button>
-                    <div main-title>Sights and Sounds</div>
+                    <paper-icon-button hidden$="{{wideLayout}}" icon="menu" on-tap="_onTap"
+                                       drawer-toggle></paper-icon-button>
+                    <div main-title>Sights &amp; Sounds</div>
+
+                    <!--
+                    <img id="appLogo" src="../images/sights-sounds-logo-only.svg">
+                    -->
+
+                    <!--
+                        <paper-tabs id="tabsForMenu" selected="[[page]]" attr-for-selected="name" scrollable
+                                    fit-container>
+
+                            <paper-tab name="dashboard">dashboard</paper-tab>
+                            <paper-tab name="landmarks">landmarks</paper-tab>
+                            <paper-tab name="memories">memories</paper-tab>
+                            <paper-tab name="reminders">reminders</paper-tab>
+                            <paper-tab name="sync">sync</paper-tab>
+
+                        </paper-tabs>
+                    -->
                     <ss-network-status></ss-network-status>
-                    <ss-login-status id='loginStatus' signed-in="[[signedIn]]"></ss-login-status>
+                    <ss-avatar id="tinyAvatarButton" user="[[user]]" signed-in="[[signedIn]]" is-mini="true"></ss-avatar>
                 </app-toolbar>
+
+                <!--
+                <div hidden$="{{!wideLayout}}">
+                <app-toolbar>
+                    <paper-tabs id="tabsForMenu" selected="[[page]]" attr-for-selected="name" scrollable fit-container>
+
+                        <paper-tab name="dashboard">dashboard</paper-tab>
+                        <paper-tab link="true">landmarks<a href="[[rootPath]]landmarks"></a></paper-tab>
+                        <paper-tab>memories</paper-tab>
+                        <paper-tab>reminders</paper-tab>
+                        <paper-tab>sync</paper-tab>
+
+                    </paper-tabs>
+                </app-toolbar>
+                </div>
+                -->
+
             </app-header>
 
-            <app-drawer-layout id="drawerLayout" narrow="{{narrow}}">
+            <app-drawer-layout id="drawerLayout" narrow="{{narrow}}" force-narrow="true">
                 <!-- Drawer content -->
                 <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
                     <app-toolbar id="avatar">
-                        <ss-avatar id="avatarButton" user="[[user]]" signed-in="[[signedIn]]"></ss-avatar>
+                        <ss-avatar id="avatarButton" user="[[user]]" signed-in="[[signedIn]]" show-name="true"></ss-avatar>
                     </app-toolbar>
                     <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
 
@@ -227,11 +275,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
+                    wideLayout: Boolean,
                     page: {
                         type: String,
                         reflectToAttribute: true,
                         observer: '_pageChanged',
-                        value: 'dashboard'
+                        value: 'dashboard',
                     },
                     routeData: Object,
                     subroute: String,
@@ -242,8 +291,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     user: Object,
                     fbApp: {
                         type: Object,
-                        notify: true
-                    }
+                        notify: true,
+                    },
                 };
             }
 
@@ -256,8 +305,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             ready() {
                 super.ready();
                 var self = this;
-                this.$.loginStatus.addEventListener('start-sign-in', this.signIn.bind(self));
-                this.$.loginStatus.addEventListener('start-sign-out', this.signOut.bind(self));
+                this.$.tinyAvatarButton.addEventListener('start-sign-in', this.signIn.bind(self));
+                this.$.tinyAvatarButton.addEventListener('start-sign-out', this.signOut.bind(self));
                 this.$.avatarButton.addEventListener('start-sign-in', this.signIn.bind(self));
                 this.$.avatarButton.addEventListener('start-sign-out', this.signOut.bind(self));
             }
@@ -321,3 +370,4 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.customElements.define(SightsSoundsApp.is, SightsSoundsApp);
     </script>
 </dom-module>
+

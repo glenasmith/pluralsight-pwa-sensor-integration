@@ -23,14 +23,14 @@
 
         <span>
       <template is="dom-if" if="{{user}}">
-        <paper-avatar on-click="startSignOut"
-                      image-src="[[user.photoURL]]"></paper-avatar>
-        <span class="userName">[[user.displayName]]</span>
+                <paper-avatar on-click="startSignOut" mini="[[isMini]]"
+                              image-src="[[user.photoURL]]"></paper-avatar>
+        <span class="userName" hidden$="{{!showName}}">[[user.displayName]]</span>
 
       </template>
       <template is="dom-if" if="{{!user}}">
-        <paper-avatar on-click="startSignIn"></paper-avatar>
-        <span class="userName">Login</span>
+        <paper-avatar mini="[[isMini]]" on-click="startSignIn"></paper-avatar>
+        <span class="userName" hidden$="{{!showName}}">Login</span>
       </template>
 
     </span>
@@ -49,6 +49,14 @@
                         type: Boolean,
                         notify: true,
                         value: false,
+                    },
+                    showName: {
+                        type: Boolean,
+                        value: false
+                    },
+                    isMini: {
+                        type: Boolean,
+                        value: false
                     },
                     user: Object
                 };
