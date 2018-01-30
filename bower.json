@@ -27,7 +27,8 @@
     "paper-fab": "PolymerElements/paper-fab#^2.0.0",
     "polymerfire": "firebase/polymerfire#^2.2.1",
     "paper-avatar": "NeilujD/paper-avatar#^2.0.1",
-    "paper-progress": "PolymerElements/paper-progress#^2.0.1"
+    "paper-progress": "PolymerElements/paper-progress#^2.0.1",
+    "paper-item": "PolymerElements/paper-item#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
