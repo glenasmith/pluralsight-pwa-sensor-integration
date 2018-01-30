@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../../bower_components/paper-avatar/paper-avatar.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 
 
 <dom-module id="ss-avatar">
@@ -23,14 +24,16 @@
 
         <span>
       <template is="dom-if" if="{{user}}">
-                <paper-avatar on-click="startSignOut" mini="[[isMini]]"
+                <paper-avatar on-click="startSignOut" mini="[[isMini]]" id="authUserAvatar"
                               image-src="[[user.photoURL]]"></paper-avatar>
         <span class="userName" hidden$="{{!showName}}">[[user.displayName]]</span>
+          <paper-tooltip for="authUserAvatar">[[user.displayName]] (click to logout)</paper-tooltip>
 
       </template>
       <template is="dom-if" if="{{!user}}">
-        <paper-avatar mini="[[isMini]]" on-click="startSignIn"></paper-avatar>
+        <paper-avatar mini="[[isMini]]" on-click="startSignIn" id="anonUserAvatar"></paper-avatar>
         <span class="userName" hidden$="{{!showName}}">Login</span>
+          <paper-tooltip for="anonUserAvatar">Click to login</paper-tooltip>
       </template>
 
     </span>
