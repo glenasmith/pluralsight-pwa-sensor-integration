@@ -33,6 +33,7 @@ But that only works on phones. Desktops will prompt for an upload.
 
 ## Working with Fullscreen Mode
 
+Browser APIs are pretty messy with prefixing, so perhaps wrap it in a lib?
 
 ## Applying Instagram Image Filters
 
