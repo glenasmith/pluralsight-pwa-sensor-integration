@@ -38,6 +38,10 @@ for the selfie camera, or the main camera
 
 But that only works on phones. Desktops will prompt for an upload.
 
+## Wire it up to a img element
+
+img.src = URL.createObjectURL(file);
+
 
 ## Working with Fullscreen Mode
 
