@@ -5,6 +5,13 @@ You'll need to fetch this from localstorage or firebase or ?
 But images will need to stay on the device until you get network again.
 
 
+
+## The Specs
+
+Modern web browsers support a set of APIs called [Media Capture and Streams](https://www.w3.org/TR/mediacapture-streams/). These APIs allow you to access inputs such as microphones and cameras, and to a limited extent they also let you record and visualize the data.
+
+Browsers of yet greater modernity support an API called [MediaStream Recording](https://www.w3.org/TR/mediastream-recording/). This API makes recording and processing the data from these inputs really easy and fun.
+
 ## Photos
 
 [Be Inspired by Cheese](https://polymer-cheese.firebaseapp.com/)
@@ -31,9 +38,21 @@ for the selfie camera, or the main camera
 
 But that only works on phones. Desktops will prompt for an upload.
 
+
 ## Working with Fullscreen Mode
 
-Browser APIs are pretty messy with prefixing, so perhaps wrap it in a lib?
+video = document.querySelector("video");
+
+ video.requestFullScreen =
+      video.requestFullScreen ||
+      video.webkitRequestFullScreen ||
+      video.mozRequestFullScreen;
+
+function fullScreenVid(evt) {
+    video.requestFullScreen();
+}
+
+
 
 ## Applying Instagram Image Filters
 
@@ -80,4 +99,27 @@ Visualise on a cool audio element
 
 * You can [request full screen mode](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) if you want the video element to take up all the real estate. Then perhaps use a click to take the pic? 
 
+
+## Media Fragments
+
+To add a media fragment, you simply add #t=[start_time][,end_time] to the media URL. For example, to play the video between seconds 5 through 10, specify:
+
+<source src="video/chrome.webm#t=5,10" type="video/webm">
+
+IOS doesn't support this, but most other platforms do.
+
+## Working with Poster Images
+
+Add a poster attribute to the video element so that your users have an idea of the content as soon as the element loads, without needing to download video or start playback.
+
+<video poster="poster.jpg" ...>
+  ...
+</video>
+
+A poster can also be a fallback if the video src is broken or if none of the video formats supplied are supported. 
+
+
+## Working with ChromeCast
+
+Take your video and share it with the world!
 
