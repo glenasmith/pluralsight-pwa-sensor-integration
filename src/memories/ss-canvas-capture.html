@@ -1,0 +1,133 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+
+<dom-module id="ss-canvas-capture">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+            paper-tabs {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                font-size: larger;
+                text-transform: uppercase;
+                margin-bottom: 1px;
+                background-color: #5D7AF2;
+                color: white;
+            }
+
+            #photoCanvas {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            #photoPreview {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            #selfie {
+                height: 200px;
+                display: block;
+            }
+        </style>
+
+
+        <div>
+
+            <h1>Canvas Capture</h1>
+
+            <div id="takePhotoControls">
+                <video id="photoPreview" autoplay></video>
+                <paper-fab icon="image:add-a-photo" on-click="takePicture"></paper-fab>
+            </div>
+            <div id="editPhotoControls">
+                <canvas id="photoCanvas"></canvas>
+                <paper-fab icon="delete" on-click="deletePicture"></paper-fab>
+                <paper-fab icon="done" on-click="savePicture"></paper-fab>
+            </div>
+
+        </div>
+
+    </template>
+
+    <script>
+        class CanvasCapture extends Polymer.Element {
+            static get is() {
+                return 'ss-canvas-capture';
+            }
+
+            static get properties() {
+                return {
+                    selected: {
+                        type: Number,
+                        value: 0,
+                    },
+                    fbApp: Object,
+
+                };
+            }
+
+            ready() {
+                super.ready();
+                this.setupPhotoCapture();
+            }
+
+            setupPhotoCapture() {
+                var self = this;
+
+                const photoPreview = this.$.photoPreview;
+
+                this.togglePhotoCaptureControls(true); // turn them on
+
+                const constraints = {
+                    video: true,
+                };
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        photoPreview.srcObject = stream;
+                    });
+            }
+
+            togglePhotoCaptureControls(displayCaptureControls) {
+                this.$.takePhotoControls.style.display = displayCaptureControls ? 'inline' : 'none';
+                this.$.editPhotoControls.style.display = displayCaptureControls ? 'none' : 'inline';
+            }
+
+            takePicture() {
+                const photoPreview = this.$.photoPreview;
+                const photoCanvas = this.$.photoCanvas;
+                const photoContext = photoCanvas.getContext('2d');
+
+                photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
+                // TODO photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+                this.togglePhotoCaptureControls(false);
+
+                // photoCanvas.style.display = 'inline';
+                // photoPreview.style.display = 'none';
+
+
+                console.log(photoCanvas);
+            }
+
+            deletePicture() {
+                this.togglePhotoCaptureControls(true);
+            }
+        }
+
+        window.customElements.define(CanvasCapture.is, CanvasCapture);
+    </script>
+</dom-module>

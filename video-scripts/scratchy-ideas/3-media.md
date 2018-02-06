@@ -57,6 +57,13 @@ function fullScreenVid(evt) {
 }
 
 
+## Sensing Media Support
+
+```
+    const supported = 'mediaDevices' in navigator;
+```
+
+Warning: Direct access to the camera is a powerful feature. It requires consent from the user, and your site MUST be on a secure origin (HTTPS).
 
 ## Applying Instagram Image Filters
 

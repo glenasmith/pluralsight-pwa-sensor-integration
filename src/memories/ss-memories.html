@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-ref.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-upload-task.html">
+
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="ss-photo-gallery.html">
+<link rel="import" href="ss-photo-capture.html">
+<link rel="import" href="ss-canvas-capture.html">
+
+<dom-module id="ss-memories">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+            paper-tabs {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                font-size: larger;
+                text-transform: uppercase;
+                margin-bottom: 1px;
+                background-color: #5D7AF2;
+                color: white;
+            }
+
+            #photoCanvas {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            #photoPreview {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            #selfie {
+                height: 200px;
+                display: block;
+            }
+        </style>
+
+        <div class="card">
+            <paper-tabs selected="{{selected}}" scrollable fit-container>
+                <paper-tab>Album</paper-tab>
+                <paper-tab>Photo</paper-tab>
+                <paper-tab>Webcam</paper-tab>
+                <paper-tab>Video</paper-tab>
+                <paper-tab>Audio</paper-tab>
+            </paper-tabs>
+
+            <iron-pages selected="{{selected}}">
+                <div>
+                    <ss-photo-gallery></ss-photo-gallery>
+                </div>
+                <div>
+                    <ss-photo-capture fb-app="{{fbApp}}"></ss-photo-capture>
+                </div>
+                <div>
+                    <ss-canvas-capture></ss-canvas-capture>
+                </div>
+                <div>Video</div>
+                <div>Audio</div>
+            </iron-pages>
+
+        </div>
+    </template>
+
+    <script>
+        class Memories extends Polymer.Element {
+            static get is() {
+                return 'ss-memories';
+            }
+
+            static get properties() {
+                return {
+                    selected: {
+                        type: Number,
+                        value: 0,
+                    },
+                    fbApp: Object,
+
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+            
+        }
+
+        window.customElements.define(Memories.is, Memories);
+    </script>
+</dom-module>

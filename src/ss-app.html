@@ -33,14 +33,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
-<link rel="import" href="custom-components/network-status.html">
-<link rel="import" href="custom-components/avatar.html">
+<link rel="import" href="shared-components/network-status.html">
+<link rel="import" href="shared-components/avatar.html">
 
-<link rel="lazy-import" href="ss-dashboard.html">
-<link rel="lazy-import" href="ss-landmarks.html">
-<link rel="lazy-import" href="ss-memories.html">
-<link rel="lazy-import" href="ss-reminders.html">
-<link rel="lazy-import" href="ss-sync.html">
+<link rel="lazy-import" href="dashboard/ss-dashboard.html">
+<link rel="lazy-import" href="landmarks/ss-landmarks.html">
+<link rel="lazy-import" href="memories/ss-memories.html">
+<link rel="lazy-import" href="reminders/ss-reminders.html">
+<link rel="lazy-import" href="sync/ss-sync.html">
 
 
 <link rel="lazy-import" href="ss-404.html">
@@ -94,14 +94,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 padding-right: 10px;
             }
 
-            #router-outlet {
-
-            }
+            #router-outlet {}
 
             #avatar {
                 min-height: 5em;
                 padding-top: 3em;
-                background-color: #4285F4; /* gray; */
+                background-color: #4285F4;
+                /* gray; */
                 color: white;
                 min-width: 86%;
             }
@@ -118,20 +117,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 margin-right: 1em;
             }
 
+            app-header-layout:-webkit-full-screen-ancestor app-header,
+            app-header-layout:-webkit-full-screen-ancestor app-drawer {
+                z-index: -1 !important;
+            }
         </style>
 
         <iron-media-query query="min-width: 1000" query-matches="{{wideLayout}}"></iron-media-query>
 
-        <app-location
-                route="{{route}}"
-                url-space-regex="^[[rootPath]]">
+        <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
         </app-location>
 
-        <app-route
-                route="{{route}}"
-                pattern="[[rootPath]]:page"
-                data="{{routeData}}"
-                tail="{{subroute}}">
+        <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
         </app-route>
 
 
@@ -140,45 +137,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <app-header slot="header" fixed effects="waterfall">
                 <app-toolbar>
-                    <paper-icon-button hidden$="{{wideLayout}}" icon="menu" on-tap="_onTap"
-                                       drawer-toggle></paper-icon-button>
+                    <paper-icon-button hidden$="{{wideLayout}}" icon="menu" on-tap="_onTap" drawer-toggle></paper-icon-button>
                     <div main-title>Sights &amp; Sounds</div>
-
-                    <!--
-                    <img id="appLogo" src="../images/sights-sounds-logo-only.svg">
-                    -->
-
-                    <!--
-                        <paper-tabs id="tabsForMenu" selected="[[page]]" attr-for-selected="name" scrollable
-                                    fit-container>
-
-                            <paper-tab name="dashboard">dashboard</paper-tab>
-                            <paper-tab name="landmarks">landmarks</paper-tab>
-                            <paper-tab name="memories">memories</paper-tab>
-                            <paper-tab name="reminders">reminders</paper-tab>
-                            <paper-tab name="sync">sync</paper-tab>
-
-                        </paper-tabs>
-                    -->
                     <ss-network-status></ss-network-status>
                     <ss-avatar id="tinyAvatarButton" user="[[user]]" signed-in="[[signedIn]]" is-mini="true"></ss-avatar>
                 </app-toolbar>
 
-                <!--
-                <div hidden$="{{!wideLayout}}">
-                <app-toolbar>
-                    <paper-tabs id="tabsForMenu" selected="[[page]]" attr-for-selected="name" scrollable fit-container>
-
-                        <paper-tab name="dashboard">dashboard</paper-tab>
-                        <paper-tab link="true">landmarks<a href="[[rootPath]]landmarks"></a></paper-tab>
-                        <paper-tab>memories</paper-tab>
-                        <paper-tab>reminders</paper-tab>
-                        <paper-tab>sync</paper-tab>
-
-                    </paper-tabs>
-                </app-toolbar>
-                </div>
-                -->
+               
 
             </app-header>
 
@@ -227,11 +192,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     </iron-selector>
                 </app-drawer>
-                <iron-pages id="router-outlet"
-                            selected="[[page]]"
-                            attr-for-selected="name"
-                            fallback-selection="404"
-                            role="main">
+                <iron-pages id="router-outlet" selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
                     <ss-dashboard name="dashboard"></ss-dashboard>
                     <ss-landmarks name="landmarks"></ss-landmarks>
                     <ss-memories name="memories" fb-app="{{fbApp}}"></ss-memories>
@@ -246,21 +207,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         </app-header-layout>
 
-        <firebase-app
-                app="{{fbApp}}"
-                name="sites-sounds-pwa"
-                api-key="AIzaSyB67jjPo7VcqMiReThraBjLaggU8OXIOsQ"
-                auth-domain="sights-sounds-pwa.firebaseapp.com"
-                database-url="https://sights-sounds-pwa.firebaseio.com"
-                storage-bucket="sights-sounds-pwa.appspot.com">
+        <firebase-app app="{{fbApp}}" name="sites-sounds-pwa" api-key="AIzaSyB67jjPo7VcqMiReThraBjLaggU8OXIOsQ" auth-domain="sights-sounds-pwa.firebaseapp.com"
+            database-url="https://sights-sounds-pwa.firebaseio.com" storage-bucket="sights-sounds-pwa.appspot.com">
         </firebase-app>
 
-        <firebase-auth
-                id="auth"
-                app-name="sites-sounds-pwa"
-                provider="google"
-                signed-in="{{signedIn}}"
-                user="{{user}}">
+        <firebase-auth id="auth" app-name="sites-sounds-pwa" provider="google" signed-in="{{signedIn}}" user="{{user}}">
             >
         </firebase-auth>
 
@@ -321,8 +272,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         console.log('Login was winning');
                         console.log(response.user);
                     }).catch(function (error) {
-                    console.error(error);
-                });
+                        console.error(error);
+                    });
             }
 
             signOut() {
@@ -343,7 +294,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _pageChanged(page) {
                 // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl('ss-' + page + '.html');
+                var resolvedPageUrl = this.resolveUrl(page + '/ss-' + page + '.html');
                 Polymer.importHref(
                     resolvedPageUrl,
                     null,
@@ -370,4 +321,3 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.customElements.define(SightsSoundsApp.is, SightsSoundsApp);
     </script>
 </dom-module>
-
