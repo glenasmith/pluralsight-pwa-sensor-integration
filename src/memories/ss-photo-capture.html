@@ -20,9 +20,25 @@
 
 
 
+            #selfie:-webkit-full-screen {
+                width: 100%;
+                height: 100%;
+            }
+
+            #selfie:-moz-full-screen {
+                width: 100%;
+                height: 100%;
+            }
+
+            #selfie:fullscreen {
+                width: 100%;
+                height: 100%;
+            }
+
             #selfie {
                 height: 200px;
                 display: block;
+                background-color: black;
             }
 
         </style>
@@ -31,7 +47,7 @@
 
                     <h1>Take a Snap</h1>
 
-                    <img id="selfie" src="images/avatar-placeholder.svg">
+                    <img id="selfie" src="images/avatar-placeholder.svg" on-click="toggleFullScreenPhoto">
 
                     <firebase-storage-ref id="firebaseStorage"
                             app="{{fbApp}}"
@@ -49,7 +65,7 @@
                             state="{{fsState}}"
                             ></firebase-storage-upload-task>
 
-                    <input id="photoUpload" type="file" accept="image/*" capture on-change="uploadPhotos" on-click="toggleFullScreenPhoto">
+                    <input id="photoUpload" type="file" accept="image/*" capture on-change="uploadPhotos">
                     <template is="dom-if" if="{{fsCurrentlyUploading}}">
                         <paper-progress max="{{fsTotalBytes}}" value="{{fsBytesTransferred}}"></paper-progress>
                         <div>Transferring {{fsBytesTransferred}} of {{fsTotalBytes}}  ({{fsState}})</div>
@@ -93,7 +109,7 @@
 
             ready() {
                 super.ready();
-                this.$.selfie.addEventListener('click', this.toggleFullScreenPhoto.bind(this));
+                //this.$.selfie.addEventListener('click', this.toggleFullScreenPhoto.bind(this));
             }
 
             computeUploading(fsState) {
