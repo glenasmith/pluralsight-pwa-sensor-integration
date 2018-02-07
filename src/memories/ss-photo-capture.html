@@ -5,8 +5,10 @@
 <link rel="import" href="../../bower_components/polymerfire/firebase-storage-upload-task.html">
 
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
+<script src="filterous2-2.0.0.min.js"></script>
 
 <dom-module id="ss-photo-capture">
     <template>
@@ -66,6 +68,7 @@
                             ></firebase-storage-upload-task>
 
                     <input id="photoUpload" type="file" accept="image/*" capture on-change="uploadPhotos">
+                    <paper-button on-click="filterImage">Filter Image</paper-button>
                     <template is="dom-if" if="{{fsCurrentlyUploading}}">
                         <paper-progress max="{{fsTotalBytes}}" value="{{fsBytesTransferred}}"></paper-progress>
                         <div>Transferring {{fsBytesTransferred}} of {{fsTotalBytes}}  ({{fsState}})</div>
@@ -114,6 +117,10 @@
 
             computeUploading(fsState) {
                 return fsState == 'running';
+            }
+
+            filterImage() {
+                filterous.importImage(this.$.selfie).applyInstaFilter('moon').renderHtml(this.$.selfie);
             }
 
             uploadPhotos(evt) {
