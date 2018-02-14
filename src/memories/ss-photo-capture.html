@@ -10,14 +10,15 @@
 
 <script src="filterous2-2.0.0.min.js"></script>
 
-
+<link rel="import" href="cssgram.html"/>
+<!--
 <link rel="stylesheet" href="cssgram.min.css"/>
-
+-->
 
 
 <dom-module id="ss-photo-capture">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles cssgram-styles">
             :host {
                 display: block;
 
@@ -37,6 +38,10 @@
                 height: 100%;
             }
 
+            #myfilter {
+                height: 220px;
+            }
+
             #selfie {
                 height: 200px;
                 display: block;
@@ -49,7 +54,7 @@
 
             <h1>Take a Snap</h1>
 
-            <figure class="Inkwell">
+            <figure id="myfilter" class="{{filterType}}">
                 <img id="selfie" src="images/avatar-placeholder.svg" on-click="toggleFullScreenPhoto">
             </figure>
 
@@ -88,6 +93,7 @@
 
             static get properties() {
                 return {
+                    filterType: String,
                     fbApp: Object,
                     fsMetadata: Object,
                     fsPath: {
@@ -125,7 +131,8 @@
                 // filterous.importImage(this.$.selfie).applyInstaFilter('moon').renderHtml(this.$.selfie);
                 console.log('Filtering...')
                 console.debug(this.$.myfilter);
-                this.$.myfilter.className = 'Inkwell';
+                // this.$.myfilter.className = 'inkwell';
+                this.set('filterType', 'inkwell');
                 console.log('Done filtering...');
                 //document.getElementById("myfilter").className = "Inkwell";
             }
