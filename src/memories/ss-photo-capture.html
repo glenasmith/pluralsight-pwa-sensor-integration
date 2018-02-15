@@ -8,6 +8,9 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
+
+<link rel="import" href="ss-photo-filters.html"/>
+
 <script src="filterous2-2.0.0.min.js"></script>
 
 <link rel="import" href="cssgram.html"/>
@@ -55,7 +58,7 @@
             <h1>Take a Snap</h1>
 
             <figure id="myfilter" class="{{filterType}}">
-                <img id="selfie" src="images/avatar-placeholder.svg" on-click="toggleFullScreenPhoto">
+                <img id="selfie" src="[[selfieUrl]]" on-click="toggleFullScreenPhoto">
             </figure>
 
             <firebase-storage-ref id="firebaseStorage"
@@ -76,6 +79,14 @@
 
             <input id="photoUpload" type="file" accept="image/*" capture on-change="uploadPhotos">
             <paper-button on-click="filterImage">Filter Image</paper-button>
+
+            <template is="dom-if" if="[[showFilterView]]">
+
+                <ss-photo-filters image-data='[[selfieUrl]]'></ss-photo-filters>
+
+            </template>
+
+
             <template is="dom-if" if="{{fsCurrentlyUploading}}">
                 <paper-progress max="{{fsTotalBytes}}" value="{{fsBytesTransferred}}"></paper-progress>
                 <div>Transferring {{fsBytesTransferred}} of {{fsTotalBytes}} ({{fsState}})</div>
@@ -113,6 +124,16 @@
                     fsCurrentlyUploading: {
                         type: Boolean,
                         computed: 'computeUploading(fsState)'
+                    },
+                    selfieUrl: {
+                        type: String,
+                        value: 'images/avatar-placeholder.svg',
+                        notify: true
+                    },
+                    showFilterView: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
                     }
 
                 };
@@ -128,12 +149,14 @@
             }
 
             filterImage() {
+                this.set('showFilterView', !this.get('showFilterView'));
+
                 // filterous.importImage(this.$.selfie).applyInstaFilter('moon').renderHtml(this.$.selfie);
-                console.log('Filtering...')
-                console.debug(this.$.myfilter);
+                // console.log('Filtering...')
+                // console.debug(this.$.myfilter);
                 // this.$.myfilter.className = 'inkwell';
-                this.set('filterType', 'inkwell');
-                console.log('Done filtering...');
+                // this.set('filterType', 'inkwell');
+                // console.log('Done filtering...');
                 //document.getElementById("myfilter").className = "Inkwell";
             }
 
@@ -145,7 +168,8 @@
                 fbs.log = true;
                 if (files && files.length > 0) {
                     var file = files[0];
-                    this.$.selfie.src = URL.createObjectURL(file);
+                    // this.$.selfie.src = URL.createObjectURL(file);
+                    this.set('selfieUrl', URL.createObjectURL(file))
 
                     // for (var f = 0; f < files.length; f++) {
                     //     var file = files[f];
