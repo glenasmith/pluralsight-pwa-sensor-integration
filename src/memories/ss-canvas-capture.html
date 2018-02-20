@@ -40,6 +40,13 @@
 
             </template>
 
+
+            <template is="dom-if" if="[[captureRejected]]">
+
+                <h3>You have reject the Camera permission, so we can't take a picture</h3>
+
+            </template>
+
             <template is="dom-if" if="[[!apiSupported]]">
 
                 <h3>Sorry, your browser doesn't support this API</h3>
@@ -50,7 +57,7 @@
             <div id="takePhotoControls">
                 <video id="photoPreview" autoplay></video>
                 <paper-fab icon="image:add-a-photo" on-click="startCamera"></paper-fab>
-                <paper-fab icon="image:add-a-photo" on-click="takePicture"></paper-fab>
+                <paper-fab icon="image:camera" on-click="takePicture"></paper-fab>
             </div>
             <div id="editPhotoControls">
                 <canvas id="photoCanvas"></canvas>
@@ -73,6 +80,10 @@
                     apiSupported: {
                         type: Boolean,
                         value: true
+                    },
+                    captureRejected: {
+                        type: Boolean,
+                        value: false
                     },
                     selected: {
                         type: Number,
@@ -113,6 +124,9 @@
                     .then((stream) => {
                         photoPreview.srcObject = stream;
                         this.set('cameraActive', true);
+                    }, (err) => {
+                        console.log('User rejected camera capture permissions', err);
+                        this.set('captureRejected', true);
                     });
             }
 
