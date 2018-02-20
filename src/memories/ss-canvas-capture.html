@@ -17,7 +17,7 @@
 
             }
 
-            
+
 
             #photoCanvas {
                 max-width: 100%;
@@ -28,14 +28,24 @@
                 max-width: 100%;
                 width: 100%;
             }
-
-            
         </style>
 
 
         <div>
 
             <h1>Canvas Capture</h1>
+            <template is="dom-if" if="[[cameraActive]]">
+
+                <h3> Camera is active</h3>
+
+            </template>
+
+            <template is="dom-if" if="[[!apiSupported]]">
+
+                <h3>Sorry, your browser doesn't support this API</h3>
+
+            </template>
+
 
             <div id="takePhotoControls">
                 <video id="photoPreview" autoplay></video>
@@ -60,13 +70,17 @@
 
             static get properties() {
                 return {
+                    apiSupported: {
+                        type: Boolean,
+                        value: true
+                    },
                     selected: {
                         type: Number,
                         value: 0,
                     },
                     cameraActive: {
                         type: Boolean,
-                        value: false,    
+                        value: false,
                     }
 
                 };
@@ -74,17 +88,18 @@
 
             ready() {
                 super.ready();
-               
+                let apiSupported = 'mediaDevices' in navigator;
+                this.set('apiSupported', apiSupported);
             }
 
             stopCamera() {
-
+                const photoPreview = this.$.photoPreview;
+                photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+                this.set('cameraActive', false);
             }
 
 
             startCamera() {
-                
-                let self = this;
 
                 const photoPreview = this.$.photoPreview;
 
@@ -97,7 +112,7 @@
                 navigator.mediaDevices.getUserMedia(constraints)
                     .then((stream) => {
                         photoPreview.srcObject = stream;
-                        self.set('cameraActive', true);
+                        this.set('cameraActive', true);
                     });
             }
 
@@ -114,8 +129,7 @@
                 photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
                 this.togglePhotoCaptureControls(false);
 
-                photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
-                this.set('cameraActive', false);
+                this.stopCamera();
 
                 // photoCanvas.style.display = 'inline';
                 // photoPreview.style.display = 'none';
