@@ -39,6 +39,7 @@
 
             <div id="takePhotoControls">
                 <video id="photoPreview" autoplay></video>
+                <paper-fab icon="image:add-a-photo" on-click="startCamera"></paper-fab>
                 <paper-fab icon="image:add-a-photo" on-click="takePicture"></paper-fab>
             </div>
             <div id="editPhotoControls">
@@ -63,18 +64,27 @@
                         type: Number,
                         value: 0,
                     },
-                    fbApp: Object,
+                    cameraActive: {
+                        type: Boolean,
+                        value: false,    
+                    }
 
                 };
             }
 
             ready() {
                 super.ready();
-                this.setupPhotoCapture();
+               
             }
 
-            setupPhotoCapture() {
-                var self = this;
+            stopCamera() {
+
+            }
+
+
+            startCamera() {
+                
+                let self = this;
 
                 const photoPreview = this.$.photoPreview;
 
@@ -87,6 +97,7 @@
                 navigator.mediaDevices.getUserMedia(constraints)
                     .then((stream) => {
                         photoPreview.srcObject = stream;
+                        self.set('cameraActive', true);
                     });
             }
 
@@ -101,8 +112,10 @@
                 const photoContext = photoCanvas.getContext('2d');
 
                 photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
-                // TODO photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
                 this.togglePhotoCaptureControls(false);
+
+                photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+                this.set('cameraActive', false);
 
                 // photoCanvas.style.display = 'inline';
                 // photoPreview.style.display = 'none';
