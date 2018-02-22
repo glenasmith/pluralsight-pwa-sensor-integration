@@ -53,6 +53,14 @@
 
             </template>
 
+            <paper-dropdown-menu label="Camera Source">
+                <paper-listbox slot="dropdown-content" selected="1">
+                    <template is="dom-repeat" items="[[cameraDevices]]">
+                        <paper-item>[[item.label]]</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+
 
             <div id="takePhotoControls">
                 <video id="photoPreview" autoplay></video>
@@ -92,6 +100,10 @@
                     cameraActive: {
                         type: Boolean,
                         value: false,
+                    },
+                    cameraDevices: {
+                        type: Array,
+                        value: []
                     }
 
                 };
@@ -101,6 +113,26 @@
                 super.ready();
                 let apiSupported = 'mediaDevices' in navigator;
                 this.set('apiSupported', apiSupported);
+                this.listDevices();
+            }
+
+            listDevices() {
+                let self = this;
+                navigator.mediaDevices.enumerateDevices()
+                    .then(function (devices) {
+                        let cameras = []
+                        devices.forEach(function (device) {
+                            console.log(device.kind + ": " + device.label +
+                                " id = " + device.deviceId);
+                            if (device.kind === 'videoinput') {
+                                cameras.push(device);
+                            }
+                        });
+                        self.set('cameraDevices', cameras);
+                    })
+                    .catch(function (err) {
+                        console.log(err.name + ": " + err.message);
+                    });
             }
 
             stopCamera() {

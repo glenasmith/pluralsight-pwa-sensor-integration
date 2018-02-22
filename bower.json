@@ -29,7 +29,10 @@
     "paper-avatar": "NeilujD/paper-avatar#^2.0.1",
     "paper-progress": "PolymerElements/paper-progress#^2.0.1",
     "paper-item": "PolymerElements/paper-item#^2.0.0",
-    "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.1"
+    "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.1",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.2",
+    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
+    "neon-animation": "PolymerElements/neon-animation#^2.2.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
