@@ -54,7 +54,7 @@
             </template>
 
             <paper-dropdown-menu label="Camera Source">
-                <paper-listbox slot="dropdown-content" selected="1">
+                <paper-listbox slot="dropdown-content" selected="{{selectedCameraIdx}}">
                     <template is="dom-repeat" items="[[cameraDevices]]">
                         <paper-item>[[item.label]]</paper-item>
                     </template>
@@ -93,7 +93,7 @@
                         type: Boolean,
                         value: false
                     },
-                    selected: {
+                    selectedCameraIdx: {
                         type: Number,
                         value: 0,
                     },
@@ -156,6 +156,15 @@
                     video: true,
                 };
 
+                
+                var allDevices = this.get('cameraDevices');
+                var comboSelection = this.get('selectedCameraIdx');
+                console.log(allDevices, comboSelection);
+                var selectedCamera = allDevices[comboSelection];
+                console.log("Switching camera to: ", selectedCamera);
+                constraints.deviceId = selectedCamera.deviceId;
+                console.log(constraints);
+            
                 navigator.mediaDevices.getUserMedia(constraints)
                     .then((stream) => {
                         photoPreview.srcObject = stream;
