@@ -152,9 +152,9 @@
                 // https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
                 // demo: https://webrtc.github.io/samples/src/content/devices/input-output/
 
-                const constraints = {
-                    video: true,
-                };
+               
+               var supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+               console.log(supportedConstraints);
 
                 
                 var allDevices = this.get('cameraDevices');
@@ -162,8 +162,16 @@
                 console.log(allDevices, comboSelection);
                 var selectedCamera = allDevices[comboSelection];
                 console.log("Switching camera to: ", selectedCamera);
+
+                // Find info on the Constraints object (and cool demo)
+                // https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
+                let constraints = {
+                    video: {
+                        deviceId: selectedCamera.deviceId
+                    },
+                    audio: false,
+                };
                 
-                constraints.deviceId = { exact: selectedCamera.deviceId };
                 console.log(constraints);
             
                 navigator.mediaDevices.getUserMedia(constraints)
