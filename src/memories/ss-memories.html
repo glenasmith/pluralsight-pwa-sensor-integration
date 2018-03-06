@@ -15,6 +15,7 @@
 <link rel="import" href="ss-video-capture.html">
 <link rel="import" href="ss-canvas-capture.html">
 <link rel="import" href="ss-audio-capture-api.html">
+<link rel="import" href="ss-video-capture-api.html">
 
 
 
@@ -50,6 +51,7 @@
                 <paper-tab>Video</paper-tab>
                 <paper-tab>Audio</paper-tab>
                 <paper-tab>Audio (API)</paper-tab>
+                <paper-tab>Video (API)</paper-tab>
             </paper-tabs>
 
             <iron-pages selected="{{selected}}">
@@ -71,6 +73,10 @@
                 <div>
                     <ss-audio-capture-api></ss-audio-capture-api>
                 </div>
+                <div>
+                    <ss-video-capture-api></ss-video-capture-api>
+                </div>
+
             </iron-pages>
 
         </div>
