@@ -1,0 +1,115 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+
+<dom-module id="ss-audio-capture-api">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+            
+        </style>
+
+        <div>
+
+            <h1>API Edition - Take an Audio Voice Note</h1>
+
+            <audio id="voiceNote" controls>
+                Your browser does not support the audio tag.
+            </audio>
+
+            <paper-fab icon="image:add-a-photo" on-click="startAudio"></paper-fab>
+            <paper-fab icon="done" on-click="stopAudio"></paper-fab>
+            
+        </div>
+        <div>
+
+    </template>
+
+    <script>
+        class AudioCaptureApi extends Polymer.Element {
+
+            static get is() {
+                return 'ss-audio-capture-api';
+            }
+
+            static get properties() {
+                return {
+
+                    mediaRecorder: {
+                        type: Object
+                    },
+                    recordedAudio: {
+                        type: Array,
+                        value: []
+                    }
+
+                    
+
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+            startAudio() {
+
+                const audioPreview = this.$.voiceNote;
+
+                let constraints = {
+                    audio: true,
+                    video: false
+                }
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        var mediaRecorder = new MediaRecorder(stream);
+                        this.set('mediaRecorder', mediaRecorder);
+                        mediaRecorder.start();
+                        console.log(mediaRecorder.state);
+                        var chunks = [];
+                        this.set('recordedAudio', chunks);
+
+                        mediaRecorder.ondataavailable = function(e) {
+                            chunks.push(e.data);
+                        }
+
+                        // audioPreview.srcObject = stream;
+                    }, (err) => {
+                        console.log('User rejected camera capture permissions', err);
+                    });
+            }
+
+            stopAudio() {
+
+                var mr = this.get('mediaRecorder');
+                if (mr) {
+                    mr.stop();
+                    console.log(mr.state);
+                    var blob = new Blob(this.get('recordedAudio'), { 'type' : 'audio/ogg; codecs=opus' });
+
+                    const audioPreview = this.$.voiceNote;
+                    audioPreview.src = URL.createObjectURL(blob);
+                // audioPreview.srcObject.getAudioTracks().forEach(track => track.stop());
+
+
+                }
+
+                
+            }
+
+           
+
+        }
+
+        window.customElements.define(AudioCaptureApi.is, AudioCaptureApi);
+    </script>
+</dom-module>

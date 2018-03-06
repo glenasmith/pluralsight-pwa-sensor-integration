@@ -14,6 +14,7 @@
 <link rel="import" href="ss-audio-capture.html">
 <link rel="import" href="ss-video-capture.html">
 <link rel="import" href="ss-canvas-capture.html">
+<link rel="import" href="ss-audio-capture-api.html">
 
 
 
@@ -48,6 +49,7 @@
                 <paper-tab>Webcam</paper-tab>
                 <paper-tab>Video</paper-tab>
                 <paper-tab>Audio</paper-tab>
+                <paper-tab>Audio (API)</paper-tab>
             </paper-tabs>
 
             <iron-pages selected="{{selected}}">
@@ -65,6 +67,9 @@
                 </div>
                 <div>
                     <ss-audio-capture></ss-audio-capture>
+                </div>
+                <div>
+                    <ss-audio-capture-api></ss-audio-capture-api>
                 </div>
             </iron-pages>
 
