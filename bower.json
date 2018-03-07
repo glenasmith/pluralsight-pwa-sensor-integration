@@ -30,9 +30,10 @@
     "paper-progress": "PolymerElements/paper-progress#^2.0.1",
     "paper-item": "PolymerElements/paper-item#^2.0.0",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.1",
-    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.2",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.3",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
-    "neon-animation": "PolymerElements/neon-animation#^2.2.0"
+    "neon-animation": "PolymerElements/neon-animation#^2.2.0",
+    "web-animations-js": "^2.3.1"
   },
   "resolutions": {
     "polymer": "^2.0.0"
