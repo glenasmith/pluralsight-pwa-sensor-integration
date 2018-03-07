@@ -123,7 +123,8 @@
                         let cameras = []
                         devices.forEach(function (device) {
                             console.log(device.kind + ": " + device.label +
-                                " id = " + device.deviceId);
+                                " id = " + device.deviceId + 
+                                " groupId = " + device.groupId);
                             if (device.kind === 'videoinput') {
                                 cameras.push(device);
                             }
@@ -157,10 +158,10 @@
                console.log(supportedConstraints);
 
                 
-                var allDevices = this.get('cameraDevices');
+                var cameraDevices = this.get('cameraDevices');
                 var comboSelection = this.get('selectedCameraIdx');
-                console.log(allDevices, comboSelection);
-                var selectedCamera = allDevices[comboSelection];
+                console.log(cameraDevices, comboSelection);
+                var selectedCamera = cameraDevices[comboSelection];
                 console.log("Switching camera to: ", selectedCamera);
 
                 // Find info on the Constraints object (and cool demo)
