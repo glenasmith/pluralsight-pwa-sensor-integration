@@ -217,13 +217,11 @@
             stopVideo() {
 
                 console.log("Stopping video");
-                const videoPreview = this.$.videoNote;
                 
                 var mr = this.get('mediaRecorder');
                 if (mr) {
                     mr.stop();
                     console.log(mr.state);
-                    
                 }
 
                 
