@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../shared-styles.html">
 
 <dom-module id="ss-network-status">
@@ -12,8 +14,10 @@
     </style>
 
     <span>
-      <iron-icon icon="cloud" hidden$="[[!online]]"></iron-icon>
-      <iron-icon icon="cloud-off" hidden$="[[online]]"></iron-icon>
+      <iron-icon id="onlineIcon" icon="cloud" hidden$="[[!online]]"></iron-icon>
+      <iron-icon id="offlineIcon" icon="cloud-off" hidden$="[[online]]"></iron-icon>
+      <paper-tooltip for="onlineIcon">Online</paper-tooltip>
+      <paper-tooltip for="offlineIcon">Offline</paper-tooltip>
     </span>
   </template>
 
@@ -29,7 +33,6 @@
                   notify: true,
                   value: false,
               },
-
           };
       }
 

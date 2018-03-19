@@ -1,0 +1,222 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+
+
+<dom-module id="ss-canvas-capture">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+
+
+            #photoCanvas {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            #photoPreview {
+                max-width: 100%;
+                width: 100%;
+            }
+        </style>
+
+
+        <div>
+
+            <h1>Canvas Capture</h1>
+            <template is="dom-if" if="[[cameraActive]]">
+
+                <h3> Camera is active</h3>
+
+            </template>
+
+
+            <template is="dom-if" if="[[captureRejected]]">
+
+                <h3>You have reject the Camera permission, so we can't take a picture</h3>
+
+            </template>
+
+            <template is="dom-if" if="[[!apiSupported]]">
+
+                <h3>Sorry, your browser doesn't support this API</h3>
+
+            </template>
+
+            <paper-dropdown-menu label="Camera Source"> 
+                <paper-listbox slot="dropdown-content" selected="{{selectedCameraIdx}}">
+                    <template is="dom-repeat" items="[[cameraDevices]]">
+                        <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu> 
+
+
+            <div id="takePhotoControls">
+                <video id="photoPreview" autoplay></video>
+                <paper-fab icon="image:add-a-photo" on-click="startCamera"></paper-fab>
+                <paper-fab icon="image:camera" on-click="takePicture"></paper-fab>
+            </div>
+            <div id="editPhotoControls">
+                <canvas id="photoCanvas"></canvas>
+                <paper-fab icon="delete" on-click="deletePicture"></paper-fab>
+                <paper-fab icon="done" on-click="savePicture"></paper-fab>
+            </div>
+
+        </div>
+
+    </template>
+
+    <script>
+        class CanvasCapture extends Polymer.Element {
+            static get is() {
+                return 'ss-canvas-capture';
+            }
+
+            static get properties() {
+                return {
+                    apiSupported: {
+                        type: Boolean,
+                        value: true
+                    },
+                    captureRejected: {
+                        type: Boolean,
+                        value: false
+                    },
+                    selectedCameraIdx: {
+                        type: Number,
+                        value: 0,
+                    },
+                    cameraActive: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    cameraDevices: {
+                        type: Array,
+                        value: []
+                    }
+
+                };
+            }
+
+            ready() {
+                super.ready();
+                let apiSupported = 'mediaDevices' in navigator;
+                this.set('apiSupported', apiSupported);
+                this.listDevices();
+            }
+
+            listDevices() {
+                let self = this;
+                navigator.mediaDevices.enumerateDevices()
+                    .then(function (devices) {
+                        let cameras = []
+                        devices.forEach(function (device) {
+                            console.log(device.kind + ": " + device.label +
+                                " id = " + device.deviceId + 
+                                " groupId = " + device.groupId);
+                            if (device.kind === 'videoinput') {
+                                cameras.push(device);
+                            }
+                        });
+                        self.set('cameraDevices', cameras);
+                    })
+                    .catch(function (err) {
+                        console.log(err.name + ": " + err.message);
+                    });
+            }
+
+            stopCamera() {
+                const photoPreview = this.$.photoPreview;
+                photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+                this.set('cameraActive', false);
+            }
+
+
+            startCamera() {
+
+                const photoPreview = this.$.photoPreview;
+
+                this.togglePhotoCaptureControls(true); // turn them on
+
+                // deviceId: videoSource
+                // https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
+                // demo: https://webrtc.github.io/samples/src/content/devices/input-output/
+
+               
+               var supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+               console.log(supportedConstraints);
+
+                
+                var cameraDevices = this.get('cameraDevices');
+                var comboSelection = this.get('selectedCameraIdx');
+                console.log(cameraDevices, comboSelection);
+                var selectedCamera = cameraDevices[comboSelection];
+                console.log("Switching camera to: ", selectedCamera);
+
+                // Find info on the Constraints object (and cool demo)
+                // https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
+                let constraints = {
+                    video: {
+                        deviceId: selectedCamera.deviceId
+                    },
+                    audio: false,
+                };
+                
+                console.log(constraints);
+            
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        photoPreview.srcObject = stream;
+                        this.set('cameraActive', true);
+                    }, (err) => {
+                        console.log('User rejected camera capture permissions', err);
+                        this.set('captureRejected', true);
+                    });
+            }
+
+            togglePhotoCaptureControls(displayCaptureControls) {
+                this.$.takePhotoControls.style.display = displayCaptureControls ? 'inline' : 'none';
+                this.$.editPhotoControls.style.display = displayCaptureControls ? 'none' : 'inline';
+            }
+
+            takePicture() {
+                const photoPreview = this.$.photoPreview;
+                const photoCanvas = this.$.photoCanvas;
+                const photoContext = photoCanvas.getContext('2d');
+
+                photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
+                this.togglePhotoCaptureControls(false);
+
+                this.stopCamera();
+
+                // photoCanvas.style.display = 'inline';
+                // photoPreview.style.display = 'none';
+
+
+                console.log(photoCanvas);
+            }
+
+            deletePicture() {
+                this.togglePhotoCaptureControls(true);
+                this.startCamera();
+            }
+        }
+
+        window.customElements.define(CanvasCapture.is, CanvasCapture);
+    </script>
+</dom-module>

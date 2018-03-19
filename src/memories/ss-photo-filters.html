@@ -1,0 +1,70 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="cssgram.html"/>
+
+<dom-module id="ss-photo-filters">
+    <template>
+        <style include="cssgram-styles shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+            
+
+            
+        </style>
+
+        <div>
+            <h1>Apply A Filter</h1>
+
+            <figure class="aden">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+            
+            <figure class="inkwell">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="perpetua">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+            
+            <figure class="reyes">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+            
+            <div>
+
+    </template>
+
+    <script>
+        class PhotoFilters extends Polymer.Element {
+            static get is() {
+                return 'ss-photo-filters';
+            }
+
+            static get properties() {
+                return {
+                    imageData: String,
+                   selectedFilter: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+
+        }
+
+        window.customElements.define(PhotoFilters.is, PhotoFilters);
+    </script>
+</dom-module>

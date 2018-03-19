@@ -11,6 +11,7 @@ User input (touch needs visual feedback to be sure - using Material elements)
 Why Polymer? 
 * Component oriented (like React, Angular, Vue, Aurelia)
 * (Mostly) Straight JavaScript (plus Shadow-dom and click events)
+* Small and fast - which suits PWA to a T
 
 Serving up over SSL
 

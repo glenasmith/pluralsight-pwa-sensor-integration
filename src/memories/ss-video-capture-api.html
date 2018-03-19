@@ -1,0 +1,236 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+
+<dom-module id="ss-video-capture-api">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+            
+        </style>
+
+        <div>
+
+            <h1>API Edition - Take an Video Note</h1>
+
+            <template is="dom-if" if="[[!apiSupported]]">
+
+                <h3>Sorry, your browser doesn't support this API</h3>
+
+            </template>
+
+            <paper-dropdown-menu label="Video Source">
+                <paper-listbox slot="dropdown-content" selected="{{selectedVideoIdx}}">
+                    <template is="dom-repeat" items="[[videoDevices]]">
+                        <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+
+            <paper-dropdown-menu label="Audio Source">
+                <paper-listbox slot="dropdown-content" selected="{{selectedAudioIdx}}">
+                    <template is="dom-repeat" items="[[audioDevices]]">
+                        <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+
+            <video id="videoNote" controls>
+                Your browser does not support the video tag.
+            </video>
+
+            <paper-fab icon="image:add-a-photo" on-click="startVideo"></paper-fab>
+            <paper-fab icon="done" on-click="stopVideo"></paper-fab>
+            
+        </div>
+        <div>
+
+    </template>
+
+    <script>
+        class VideoCaptureApi extends Polymer.Element {
+
+            static get is() {
+                return 'ss-video-capture-api';
+            }
+
+            static get properties() {
+                return {
+
+                    apiSupported: {
+                        type: Boolean,
+                        value: true
+                    },
+                    mediaRecorder: {
+                        type: Object
+                    },
+                    recordedVideo: {
+                        type: Array,
+                        value: []
+                    },
+                    selectedAudioIdx: {
+                        type: Number,
+                        value: 0,
+                    },
+                    selectedVideoIdx: {
+                        type: Number,
+                        value: 0,
+                    },
+                    videoActive: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    audioDevices: {
+                        type: Array,
+                        value: []
+                    },
+                    videoDevices: {
+                        type: Array,
+                        value: []
+                    }
+
+                    
+
+                };
+            }
+
+           ready() {
+                super.ready();
+                let apiSupported = 'mediaDevices' in navigator;
+                this.set('apiSupported', apiSupported);
+                this.listDevices();
+            }
+
+            listDevices() {
+                let self = this;
+                navigator.mediaDevices.enumerateDevices()
+                    .then(function (devices) {
+                        let cameras = [];
+                        let microphones = [];
+                        devices.forEach(function (device) {
+                            console.log(device.kind + ": " + device.label +
+                                " id = " + device.deviceId);
+                            if (device.kind === 'videoinput') {
+                                cameras.push(device);
+                            }
+                            if (device.kind === 'audioinput') {
+                                microphones.push(device);
+                            }
+                        });
+                        self.set('videoDevices', cameras);
+                        self.set('audioDevices', microphones);
+                    })
+                    .catch(function (err) {
+                        console.log(err.name + ": " + err.message);
+                    });
+            }
+
+            startVideo() {
+
+                const videoPreview = this.$.videoNote;
+
+                var allVideoDevices = this.get('videoDevices');
+                var videoComboSelection = this.get('selectedVideoIdx');
+                
+                var selectedVideo = allVideoDevices[videoComboSelection];
+                console.log("Switching video to: ", selectedVideo);
+
+                var allAudioDevices = this.get('audioDevices');
+                var audioComboSelection = this.get('selectedAudioIdx');
+                
+                var selectedAudio = allAudioDevices[audioComboSelection];
+                console.log("Switching audio to: ", selectedAudio);
+
+
+                let constraints = {
+                    video: {
+                        deviceId: selectedVideo.deviceId
+                    },
+                    audio: {
+                        deviceId: selectedAudio.deviceId
+                    }
+                }
+
+                let self = this;
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        videoPreview.srcObject = stream;
+
+                        // Not we mute so we don't get a mic feedback loop
+                        videoPreview.muted = true;
+
+                        // And we play to start the media streaming.
+                        videoPreview.play();
+
+                        var recordOptions = {
+                            audioBitsPerSecond : 128000,
+                            videoBitsPerSecond : 2500000,
+                            mimeType : 'video/webm'
+                        }
+
+                        var mediaRecorder = new MediaRecorder(stream, recordOptions);
+                        this.set('mediaRecorder', mediaRecorder);
+                        mediaRecorder.start(1000);
+                        console.log(mediaRecorder.state);
+                        let chunks = [];
+                        self.set('recordedVideo', chunks);
+
+                        mediaRecorder.ondataavailable = function(e) {
+                             chunks.push(e.data);
+                             console.log("Chunking");
+                        }
+
+                        mediaRecorder.onstop = function(e) {
+
+                            // turn off the video and audio to save battery
+                            videoPreview.srcObject.getAudioTracks().forEach(track => track.stop());
+                            videoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+                            videoPreview.srcObject = null;
+                        
+                            videoPreview.muted = false;
+
+                            console.log("Stopping and creating video");
+                            let recordedVideo = self.get('recordedVideo');
+                            console.log(recordedVideo);
+                            var blob = new Blob(recordedVideo, { 'type' : 'video/webm' });
+                            
+                            videoPreview.src = URL.createObjectURL(blob);
+
+                        }
+
+                        
+                    }, (err) => {
+                        console.log('User rejected camera capture permissions', err);
+                    });
+            }
+
+            stopVideo() {
+
+                console.log("Stopping video");
+                
+                var mr = this.get('mediaRecorder');
+                if (mr) {
+                    mr.stop();
+                    console.log(mr.state);
+                }
+
+                
+            }
+
+           
+
+        }
+
+        window.customElements.define(VideoCaptureApi.is, VideoCaptureApi);
+    </script>
+</dom-module>

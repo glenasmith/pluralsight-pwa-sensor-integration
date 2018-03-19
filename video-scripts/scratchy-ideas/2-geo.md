@@ -65,3 +65,4 @@ https://www.google.com/maps/dir/?api=1&destination=Pike+Place+Market+Seattle+WA&
 ## Device Orientation and Motion
 
 Compass example?
+Am I pointing in the right direction to walk toward the restaurant?

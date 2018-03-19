@@ -1,0 +1,205 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-ref.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-upload-task.html">
+
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+
+<link rel="import" href="ss-photo-filters.html"/>
+
+<script src="filterous2-2.0.0.min.js"></script>
+
+<link rel="import" href="cssgram.html"/>
+<!--
+<link rel="stylesheet" href="cssgram.min.css"/>
+-->
+
+
+<dom-module id="ss-photo-capture">
+    <template>
+        <style include="shared-styles cssgram-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+            #selfie:-webkit-full-screen {
+                height: 100%;
+            }
+
+            #selfie:-moz-full-screen {
+                height: 100%;
+            }
+
+            #selfie:fullscreen {
+                height: 100%;
+            }
+
+            #myfilter {
+                height: 220px;
+            }
+
+            #selfie {
+                height: 200px;
+                display: block;
+                background-color: black;
+            }
+
+        </style>
+
+        <div>
+
+            <h1>Take a Snap</h1>
+
+            <figure id="myfilter" class="{{filterType}}">
+                <img id="selfie" src="[[selfieUrl]]" on-click="toggleFullScreenPhoto">
+            </figure>
+
+            <firebase-storage-ref id="firebaseStorage"
+                                  app="{{fbApp}}"
+                                  path="{{fsPath}}"
+                                  metadata="{{fsMetadata}}"
+                                  storage-uri="{{fsStorage}}"
+                                  download-url="{{fsDownload}}"
+            >
+            </firebase-storage-ref>
+
+            <firebase-storage-upload-task
+                    task="[[fsTask]]"
+                    bytes-transferred="{{fsBytesTransferred}}"
+                    total-bytes="{{fsTotalBytes}}"
+                    state="{{fsState}}"
+            ></firebase-storage-upload-task>
+
+            <input id="photoUpload" type="file" accept="image/*" capture on-change="uploadPhotos">
+            <paper-button on-click="filterImage">Filter Image</paper-button>
+
+            <template is="dom-if" if="[[showFilterView]]">
+
+                <ss-photo-filters image-data='[[selfieUrl]]'></ss-photo-filters>
+
+            </template>
+
+
+            <template is="dom-if" if="{{fsCurrentlyUploading}}">
+                <paper-progress max="{{fsTotalBytes}}" value="{{fsBytesTransferred}}"></paper-progress>
+                <div>Transferring {{fsBytesTransferred}} of {{fsTotalBytes}} ({{fsState}})</div>
+            </template>
+        </div>
+        <div>
+
+    </template>
+
+    <script>
+        class PhotoCapture extends Polymer.Element {
+            static get is() {
+                return 'ss-photo-capture';
+            }
+
+            static get properties() {
+                return {
+                    filterType: String,
+                    fbApp: Object,
+                    fsMetadata: Object,
+                    fsPath: {
+                        type: String,
+                        value: '/photos',
+                    },
+                    fsStorage: {
+                        type: String,
+                        value: 'gs://sights-sounds-pwa.appspot.com/photos',
+                    },
+                    fsDownload: String,
+                    toastText: String,
+                    fsTask: String,
+                    fsBytesTransferred: Number,
+                    fsTotalBytes: Number,
+                    fsState: Object,
+                    fsCurrentlyUploading: {
+                        type: Boolean,
+                        computed: 'computeUploading(fsState)'
+                    },
+                    selfieUrl: {
+                        type: String,
+                        value: 'images/avatar-placeholder.svg',
+                        notify: true
+                    },
+                    showFilterView: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
+
+                };
+            }
+
+            ready() {
+                super.ready();
+                //this.$.selfie.addEventListener('click', this.toggleFullScreenPhoto.bind(this));
+            }
+
+            computeUploading(fsState) {
+                return fsState == 'running';
+            }
+
+            filterImage() {
+                this.set('showFilterView', !this.get('showFilterView'));
+
+                // filterous.importImage(this.$.selfie).applyInstaFilter('moon').renderHtml(this.$.selfie);
+                // console.log('Filtering...')
+                // console.debug(this.$.myfilter);
+                // this.$.myfilter.className = 'inkwell';
+                // this.set('filterType', 'inkwell');
+                // console.log('Done filtering...');
+                //document.getElementById("myfilter").className = "Inkwell";
+            }
+
+            uploadPhotos(evt) {
+                console.log('Uploading file(s)');
+                var files = evt.target.files;
+
+                var fbs = this.$.firebaseStorage;
+                fbs.log = true;
+                if (files && files.length > 0) {
+                    var file = files[0];
+                    // this.$.selfie.src = URL.createObjectURL(file);
+                    this.set('selfieUrl', URL.createObjectURL(file))
+
+                    // for (var f = 0; f < files.length; f++) {
+                    //     var file = files[f];
+                    //     this.$.selfie.src = URL.createObjectURL(file);
+                    //     // console.log('Uploading ', file.name);
+                    //     // var uploadTask = fbs.put(file);
+                    //     // console.log(uploadTask);
+                    //     // this.fsTask = uploadTask;
+                    // }
+                }
+            }
+
+            toggleFullScreenPhoto() {
+                console.log("Tapped the image!!");
+                var img = this.$.selfie;
+                console.log(img);
+
+                img.requestFullScreen = img.requestFullScreen ||
+                    img.webkitRequestFullScreen ||
+                    img.mozRequestFullScreen;
+
+                if (img.requestFullScreen) {
+                    img.requestFullScreen();
+                } else {
+                    console.log("Fullscreen not supported");
+                }
+            }
+
+        }
+
+        window.customElements.define(PhotoCapture.is, PhotoCapture);
+    </script>
+</dom-module>
