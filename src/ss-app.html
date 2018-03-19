@@ -42,14 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
-<link rel="import" href="shared-components/network-status.html">
-<link rel="import" href="shared-components/avatar.html">
-
-<link rel="lazy-import" href="dashboard/ss-dashboard.html">
-<link rel="lazy-import" href="landmarks/ss-landmarks.html">
 <link rel="lazy-import" href="memories/ss-memories.html">
-<link rel="lazy-import" href="reminders/ss-reminders.html">
-<link rel="lazy-import" href="sync/ss-sync.html">
 
 
 <link rel="lazy-import" href="ss-404.html">
@@ -105,16 +98,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             #router-outlet {}
 
-            #avatar {
-                min-height: 5em;
-                padding-top: 3em;
-                background-color: #4285F4;
-                /* gray; */
-                color: white;
-                min-width: 86%;
-            }
-
-
 
             #tabsForMenu {
                 min-width: 70%;
@@ -148,11 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-toolbar>
                     <paper-icon-button hidden$="{{wideLayout}}" icon="menu" on-tap="_onTap" drawer-toggle></paper-icon-button>
                     <div main-title>Sights &amp; Sounds</div>
-                    <ss-network-status></ss-network-status>
-                    <ss-avatar id="tinyAvatarButton" user="[[user]]" signed-in="[[signedIn]]" is-mini="true"></ss-avatar>
                 </app-toolbar>
-
-               
 
             </app-header>
 
@@ -165,49 +144,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
 
 
-                        <a href="[[rootPath]]dashboard" name="dashboard" tabindex="-1">
-                            <paper-icon-item>
-                                <iron-icon icon="home" slot="item-icon"></iron-icon>
-                                <span>Dashboard</span>
-                            </paper-icon-item>
-                        </a>
-
-                        <a href="[[rootPath]]landmarks" name="landmarks" tabindex="-1">
-                            <paper-icon-item>
-                                <iron-icon icon="explore" slot="item-icon"></iron-icon>
-                                <span>Landmarks</span>
-                            </paper-icon-item>
-                        </a>
-
                         <a href="[[rootPath]]memories" name="memories" tabindex="-1">
                             <paper-icon-item>
                                 <iron-icon icon="perm-camera-mic" slot="item-icon"></iron-icon>
                                 <span>Memories</span>
                             </paper-icon-item>
                         </a>
-                        <a href="[[rootPath]]reminders" name="reminders" tabindex="-1">
-                            <paper-icon-item>
-                                <iron-icon icon="assignment" slot="item-icon"></iron-icon>
-                                <span>Reminders</span>
-                            </paper-icon-item>
-                        </a>
-
-                        <a href="[[rootPath]]sync" name="sync" tabindex="-1">
-                            <paper-icon-item>
-                                <iron-icon icon="perm-data-setting" slot="item-icon"></iron-icon>
-                                <span>Sync</span>
-                            </paper-icon-item>
-                        </a>
 
                     </iron-selector>
                 </app-drawer>
                 <iron-pages id="router-outlet" selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
-                    <ss-dashboard name="dashboard"></ss-dashboard>
-                    <ss-landmarks name="landmarks"></ss-landmarks>
                     <ss-memories name="memories" fb-app="{{fbApp}}"></ss-memories>
-                    <ss-reminders name="reminders"></ss-reminders>
-                    <ss-sync name="sync"></ss-sync>
-
                     <ss-404 name="404"></ss-404>
                 </iron-pages>
 
@@ -215,15 +162,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         </app-header-layout>
-
-        <firebase-app app="{{fbApp}}" name="sites-sounds-pwa" api-key="AIzaSyB67jjPo7VcqMiReThraBjLaggU8OXIOsQ" auth-domain="sights-sounds-pwa.firebaseapp.com"
-            database-url="https://sights-sounds-pwa.firebaseio.com" storage-bucket="sights-sounds-pwa.appspot.com">
-        </firebase-app>
-
-        <firebase-auth id="auth" app-name="sites-sounds-pwa" provider="google" signed-in="{{signedIn}}" user="{{user}}">
-            >
-        </firebase-auth>
-
 
     </template>
 
@@ -240,19 +178,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         type: String,
                         reflectToAttribute: true,
                         observer: '_pageChanged',
-                        value: 'dashboard',
+                        value: 'memories',
                     },
                     routeData: Object,
                     subroute: String,
                     // This shouldn't be neccessary, but the Analyzer isn't picking up
                     // Polymer.Element#rootPath
                     rootPath: String,
-                    signedIn: Boolean,
-                    user: Object,
-                    fbApp: {
-                        type: Object,
-                        notify: true,
-                    },
                 };
             }
 
@@ -265,35 +197,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             ready() {
                 super.ready();
                 var self = this;
-                this.$.tinyAvatarButton.addEventListener('start-sign-in', this.signIn.bind(self));
-                this.$.tinyAvatarButton.addEventListener('start-sign-out', this.signOut.bind(self));
-                this.$.avatarButton.addEventListener('start-sign-in', this.signIn.bind(self));
-                this.$.avatarButton.addEventListener('start-sign-out', this.signOut.bind(self));
             }
 
-            signIn() {
-                console.log('Starting signin');
-                console.log(this);
-                console.log(this.$);
-
-                this.$.auth.signInWithPopup()
-                    .then(function (response) {
-                        console.log('Login was winning');
-                        console.log(response.user);
-                    }).catch(function (error) {
-                        console.error(error);
-                    });
-            }
-
-            signOut() {
-                console.log('Logout was winning');
-                this.$.auth.signOut();
-            }
-
+           
             _routePageChanged(page) {
                 // If no page was found in the route data, page will be an empty string.
                 // Default to 'view1' in that case.
-                this.page = page || 'landmarks';
+                this.page = page || 'memories';
 
                 // Close a non-persistent drawer when the page & route are changed.
                 if (!this.$.drawer.persistent) {
