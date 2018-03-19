@@ -2,12 +2,8 @@
   "entrypoint": "index.html",
   "shell": "src/ss-app.html",
   "fragments": [
-    "src/dashboard/ss-dashboard.html",
-    "src/landmarks/ss-landmarks.html",
     "src/memories/ss-memories.html",
-    "src/reminders/ss-reminders.html",
-    "src/sync/ss-sync.html",
-    "src/ss-404.html"
+    "src/404/ss-404.html"
   ],
   "sources": [
     "src/**/*",
