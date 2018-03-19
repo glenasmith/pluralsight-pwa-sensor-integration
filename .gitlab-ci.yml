@@ -18,3 +18,4 @@ pages:
     - public
   only:
   - master
+  - start-recording
