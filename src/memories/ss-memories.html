@@ -3,17 +3,20 @@
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
 
 <dom-module id="ss-memories">
     <template>
         <style include="app-grid-style shared-styles ">
+            
             :host {
                 display: block;
                 padding: 10px;
             }
 
-            figure {
-                --app-grid-columns: 1;
+            img {
+                max-width: 90%;
             }
 
 
@@ -21,24 +24,20 @@
 
         <div class="card">
 
-            <h1>First Memories</h1>
+            <h1>Basic Memories</h1>
 
-            <figure class="app-grid">
-                <img id="selfie" src="../../images/avatar-placeholder.svg">
+            <figure>
+                <img id="photo" src="../../images/avatar-placeholder.svg">
             </figure>
 
-            <paper-button raised class="indigo" on-click="takeSelfie">
-                selfie
-            </paper-button>
-            <paper-button raised class="green" on-click="takeLandmark">
-                landmark
+            <paper-button raised class="indigo" on-click="takePhoto">
+                Take Photo
             </paper-button>
 
             <div style="display: none;">
-                <input id="takeSelfie" type="file" accept="image/*" capture="user" on-change="uploadPhoto">
-                <input id="takeLandmark" type="file" accept="image/*" capture="environment" on-change="uploadPhoto">
+                <input id="photoInput" type="file" accept="image/*" capture
+                            on-change="uploadPhoto">
             </div>
-
 
 
         </div>
@@ -52,8 +51,6 @@
 
             static get properties() {
                 return {
-
-
                 };
             }
 
@@ -61,25 +58,19 @@
                 super.ready();
             }
 
-            takeSelfie() {
-                this.$.takeSelfie.click();
+            takePhoto() {
+                this.$.photoInput.click();
             }
-
-
-            takeLandmark() {
-                this.$.takeLandmark.click();
-            }
-
+            
             uploadPhoto(evt) {
                 var files = Array.from(evt.target.files);
                 if (files && files.length) {
                     var file = files[0];
-                    this.$.selfie.src = URL.createObjectURL(file);
+                    var selfieUrl = URL.createObjectURL(file);
+                    this.$.photo.src = selfieUrl;
                 }
+
             }
-
-
-
         }
 
         window.customElements.define(Memories.is, Memories);

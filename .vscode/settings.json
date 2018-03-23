@@ -1,0 +1,9 @@
+{
+    "editor.parameterHints": false,
+    "editor.quickSuggestionsDelay": 2000,
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    }
+}

@@ -23,6 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
@@ -44,7 +45,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
+<link rel="lazy-import" href="about/ss-about.html">
 <link rel="lazy-import" href="memories/ss-memories.html">
+
 
 
 <link rel="lazy-import" href="404/ss-404.html">
@@ -148,8 +151,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                         <a href="[[rootPath]]memories" name="memories" tabindex="-1">
                             <paper-icon-item>
-                                <iron-icon icon="perm-camera-mic" slot="item-icon"></iron-icon>
+                                <iron-icon icon="image:camera-alt" slot="item-icon"></iron-icon>
                                 <span>Memories</span>
+                            </paper-icon-item>
+                        </a>
+
+                        <a href="[[rootPath]]about" name="about" tabindex="-1">
+                            <paper-icon-item>
+                                <iron-icon icon="maps:local-florist" slot="item-icon"></iron-icon>
+                                <span>About</span>
                             </paper-icon-item>
                         </a>
 

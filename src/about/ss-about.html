@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="ss-about">
+    <template>
+        <style include="app-grid-style shared-styles ">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            figure {
+                --app-grid-columns: 1;
+            }
+ 
+        </style>
+
+        <div class="card">
+
+            <h1>About</h1>
+
+        </div>
+    </template>
+
+    <script>
+        class About extends Polymer.Element {
+            static get is() {
+                return 'ss-about';
+            }
+
+            static get properties() {
+                return {
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+        }
+
+        window.customElements.define(About.is, About);
+    </script>
+</dom-module>
