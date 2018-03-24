@@ -2,6 +2,9 @@
 
 
 
+
+## Basic Image Capture
+
 Input controls.
 
     <h1>Basic Memories</h1>
@@ -52,5 +55,32 @@ Implement that uploadPhoto call
             var file = files[0];
             var selfieUrl = URL.createObjectURL(file)
             this.$.photo.src = selfieUrl;
+        }
+    }
+
+## Applying Instagram Filters
+
+* All canned code for this. No live coding.
+
+## Full Screen API
+
+Ad the click handler to the image:
+
+    on-click="toggleFullScreenPhoto"
+
+And the implementation:
+
+    toggleFullScreenPhoto() {
+
+        var img = this.$.photo;
+
+        img.requestFullScreen = img.requestFullScreen ||
+            img.webkitRequestFullScreen ||
+            img.mozRequestFullScreen;
+
+        if (img.requestFullScreen) {
+            img.requestFullScreen();
+        } else {
+            console.log("Fullscreen not supported");
         }
     }

@@ -1,0 +1,164 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+
+<link rel="import" href="cssgram.html" />
+
+
+<dom-module id="ss-photo-filters">
+    <template>
+        <style include="cssgram-styles app-grid-style shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+
+            }
+
+            div {
+                --app-grid-columns: 4;
+                --X-app-grid-item-height: 350px;
+            }
+        </style>
+
+        <h1>Apply A Filter</h1>
+
+        <div class='app-grid'>
+
+            <figure class="_1977">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="aden">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="brannan">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="brooklyn">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="clarendon">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="gingham">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="hudson">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="inkwell">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="kelvin">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="lark">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="lofi">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="mayfair">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="moon">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="nashville">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="perpetua">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="reyes">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="rise">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="slumber">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="stinson">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="toaster">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="valencia">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="walden">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="willow">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+            <figure class="xpro2">
+                <img src="[[imageData]]" on-click="selectFilter">
+            </figure>
+
+
+
+            <div>
+
+
+
+    </template>
+
+    <script>
+        class PhotoFilters extends Polymer.Element {
+            static get is() {
+                return 'ss-photo-filters';
+            }
+
+            static get properties() {
+                return {
+                    imageData: String,
+                    selectedFilter: {
+                        type: String,
+                        notify: true
+                    },
+
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+            selectFilter(evt) {
+                var clickedFilter = evt.path[1].className;
+                console.log("Setting filter to", clickedFilter);
+                this.set('selectedFilter', clickedFilter);
+            }
+
+
+        }
+
+        window.customElements.define(PhotoFilters.is, PhotoFilters);
+    </script>
+</dom-module>
