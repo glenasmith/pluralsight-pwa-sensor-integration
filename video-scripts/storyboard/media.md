@@ -84,3 +84,179 @@ And the implementation:
             console.log("Fullscreen not supported");
         }
     }
+
+## Capturing Audio and Video
+
+We'll need some audio capture card:
+
+    <div class="card">
+
+            <h1>Audio Memories</h1>
+
+            <audio id="audio" src="[[audioUrl]]" controls></audio> 
+            
+            <paper-button raised class="cyan" on-click="takeAudio">
+                    Record Audio
+            </paper-button>
+
+            <div style="display: none;">
+                <input id="audioInput" type="file" accept="audio/*" capture
+                                on-change="uploadAudio">
+            </div>
+
+
+    </div>
+
+And some backing code:
+
+            uploadAudio(evt) {
+                var files = Array.from(evt.target.files);
+                if (files && files.length) {
+                    var file = files[0];
+                    var audioUrl = URL.createObjectURL(file);
+                    this.$.audio.src = audioUrl;
+                    this.set('audioUrl', audioUrl);
+                }
+
+            }
+
+## WEbcam Memories
+
+I'll need a video element:
+
+    <div class="card">
+
+            <h1>Webcam Memories</h1>
+
+            <video id="photoPreview" autoplay></video>
+
+    </div>
+
+And a button:
+
+      <paper-button raised class="indigo" >
+               <iron-icon icon="image:add-a-photo"></iron-icon>
+                    Webcam Photo
+            </paper-button>
+
+And an on-click to get started:
+
+    on-click="startCamera"
+
+And a start camera function.
+
+            startCamera() {
+                const photoPreview = this.$.photoPreview;
+
+                let constraints = {
+                    video: true,
+                    audio: false,
+                };
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        photoPreview.srcObject = stream;
+                        this.set('cameraActive', true);
+                    }, (err) => {
+                        console.log('User rejected camera capture permissions', err);
+                        this.set('captureRejected', true);
+                    });
+
+
+            }
+
+## Enumerating Devices
+
+
+On page.ready() invoke:
+
+    this.listDevices();
+
+
+Then we'll need a listDevices() method to invoke:
+
+
+            listDevices() {
+                let self = this;
+                navigator.mediaDevices.enumerateDevices()
+                            .then((devices) => {
+                                devices.forEach((device) => {
+                                    console.log(
+                                        " deviceId = " + device.deviceId +
+                                        " kind = " + device.kind +
+                                        " label = " + device.label +
+                                        " groupId = " + device.groupId
+                                    );
+                                })
+                            })
+                    .catch(function (err) {
+                        console.log(err.name + ": " + err.message);
+                    });
+            }
+
+And some props:
+
+    selectedCameraIdx: {
+        type: Number,
+        value: 0,
+    },
+    cameraDevices: {
+        type: Array,
+        value: []
+    }
+
+
+Then catch the cameras
+
+    let cameras = [];
+
+    if (device.kind === 'videoinput') {
+        cameras.push(device);
+    }
+    self.set('cameraDevices', cameras);
+
+Wire up a select:
+
+        <paper-dropdown-menu label="Video Source">
+                <paper-listbox slot="dropdown-content" selected="{{selectedVideoIdx}}">
+                    <template is="dom-repeat" items="[[cameraDevices]]">
+                        <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                    </template>
+                </paper-listbox>
+        </paper-dropdown-menu>  
+
+  
+Ok switch cameras on startup:
+
+        var cameraDevices = this.get('cameraDevices');
+        var comboSelection = this.get('selectedCameraIdx');
+        
+        var selectedCamera = cameraDevices[comboSelection];
+
+        let constraints = {
+                    video: {
+                        deviceId: selectedCamera.deviceId
+                    },
+                    audio: false,
+                };
+
+
+## Grabbing a still image
+
+
+
+Add a takePicture function:
+
+    takePicture() {
+        const photoPreview = this.$.photoPreview;
+        const photoCanvas = this.$.photoCanvas;
+        const photoContext = photoCanvas.getContext('2d');
+
+        photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
+        this.togglePhotoCaptureControls(false);
+
+        this.stopCamera();
+
+        console.log(photoCanvas);
+    }
+

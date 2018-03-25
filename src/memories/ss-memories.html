@@ -3,7 +3,12 @@
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
 <link rel="import" href="cssgram.html">
 <link rel="import" href="ss-photo-filters.html">
 
@@ -11,7 +16,6 @@
 <dom-module id="ss-memories">
     <template>
         <style include="app-grid-style shared-styles cssgram-styles">
-            
             :host {
                 display: block;
                 padding: 10px;
@@ -19,10 +23,108 @@
 
             #photo {
                 max-width: 90%;
+                display:block;
             }
 
+            #audio {
+                max-width: 90%;
+                display:block;
+            }
+
+            #video {
+                max-width: 90%;
+                display:block;
+            }
+
+            #photoPreview {
+                max-width: 90%;
+                display:block;
+            }
+
+            #photoCanvas {
+                width: 500px;
+                height: 330px;
+                max-width: 90%;
+                display: none;
+            }
+
+            #cameraClick {
+                display: none;
+            }
+
+            paper-dropdown-menu {
+                display: block;
+            }
+
+            iron-icon {
+                margin-right: 6px;
+            }
 
         </style>
+
+        <div class="card">
+
+            <h1>Webcam Memories</h1>
+
+            <video id="photoPreview" autoplay></video>
+            <canvas id="photoCanvas"></canvas>
+
+            <!-- From http://www.soundjay.com/mechanical/ -->
+            <audio id="cameraShutterClick" src="images/camera-shutter-click-08.mp3"></audio>
+
+            <paper-dropdown-menu label="Camera Source">
+                <paper-listbox slot="dropdown-content" selected="{{selectedCameraIdx}}">
+                    <template is="dom-repeat" items="[[cameraDevices]]">
+                        <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+
+            <paper-button raised class="indigo" on-click="startCamera">
+                <iron-icon icon="image:add-a-photo"></iron-icon>
+                Webcam Photo
+            </paper-button>
+            <paper-button raised class="green" on-click="takePicture">
+                <iron-icon icon="image:camera"></iron-icon>
+                Take Picture
+            </paper-button>
+
+        </div>
+
+        <div class="card">
+
+            <h1>Video Memories</h1>
+
+            <video id="video" src="[[videoUrl]]" controls></video>
+
+            <paper-button raised class="orange" on-click="takeVideo">
+                Record Video
+            </paper-button>
+
+            <div style="display: none;">
+                <input id="videoInput" type="file" accept="video/*" capture on-change="uploadVideo">
+            </div>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h1>Audio Memories</h1>
+
+            <audio id="audio" src="[[audioUrl]]" controls></audio>
+
+            <paper-button raised class="cyan" on-click="takeAudio">
+                Record Audio
+            </paper-button>
+
+            <div style="display: none;">
+                <input id="audioInput" type="file" accept="audio/*" capture on-change="uploadAudio">
+            </div>
+
+
+        </div>
 
         <div class="card">
 
@@ -32,29 +134,31 @@
                 <img id="photo" src="[[selfieUrl]]" on-click="toggleFullScreenPhoto">
             </figure>
 
+
             <paper-button raised class="indigo" on-click="takePhoto">
                 Take Photo
             </paper-button>
 
             <paper-button raised class="green" on-click="toggleFilters">
-                    Filter
+                Filter
             </paper-button>
 
+
             <div style="display: none;">
-                <input id="photoInput" type="file" accept="image/*" capture
-                            on-change="uploadPhoto">
+                <input id="photoInput" type="file" accept="image/*" capture on-change="uploadPhoto">
             </div>
 
             <template is="dom-if" if="[[showFilters]]">
 
-                    <ss-photo-filters image-data='[[selfieUrl]]'
-                                        selected-filter='{{filterName}}'>
-                    </ss-photo-filters>
-    
+                <ss-photo-filters image-data='[[selfieUrl]]' selected-filter='{{filterName}}'>
+                </ss-photo-filters>
+
             </template>
 
-
         </div>
+
+
+
     </template>
 
     <script>
@@ -74,18 +178,44 @@
                     selfieUrl: {
                         type: Object,
                         value: '../../images/avatar-placeholder.svg'
+                    },
+                    audioUrl: {
+                        type: Object,
+                        notify: true
+                    },
+                    videoUrl: {
+                        type: Object,
+                        notify: true
+                    },
+                    selectedCameraIdx: {
+                        type: Number,
+                        value: 0,
+                    },
+                    cameraDevices: {
+                        type: Array,
+                        value: []
                     }
                 };
             }
 
             ready() {
                 super.ready();
+                this.listDevices();
             }
 
             takePhoto() {
                 this.$.photoInput.click();
             }
-            
+
+            takeAudio() {
+                this.$.audioInput.click();
+            }
+
+            takeVideo() {
+                this.$.videoInput.click();
+            }
+
+
             uploadPhoto(evt) {
                 var files = Array.from(evt.target.files);
                 if (files && files.length) {
@@ -93,6 +223,28 @@
                     var selfieUrl = URL.createObjectURL(file);
                     this.$.photo.src = selfieUrl;
                     this.set('selfieUrl', selfieUrl);
+                }
+
+            }
+
+            uploadAudio(evt) {
+                var files = Array.from(evt.target.files);
+                if (files && files.length) {
+                    var file = files[0];
+                    var audioUrl = URL.createObjectURL(file);
+                    this.$.audio.src = audioUrl;
+                    this.set('audioUrl', audioUrl);
+                }
+
+            }
+
+            uploadVideo(evt) {
+                var files = Array.from(evt.target.files);
+                if (files && files.length) {
+                    var file = files[0];
+                    var videoUrl = URL.createObjectURL(file);
+                    this.$.video.src = videoUrl;
+                    this.set('videoUrl', videoUrl);
                 }
 
             }
@@ -107,8 +259,8 @@
                 var img = this.$.photo;
 
                 img.requestFullScreen = img.requestFullScreen ||
-                        img.webkitRequestFullScreen ||
-                        img.mozRequestFullScreen;
+                    img.webkitRequestFullScreen ||
+                    img.mozRequestFullScreen;
 
                 if (img.requestFullScreen) {
                     img.requestFullScreen();
@@ -116,6 +268,86 @@
                     alert('Fullscreen mode not supported');
                 }
             }
+
+            startCamera() {
+
+                const photoPreview = this.$.photoPreview;
+
+                this.togglePhotoCaptureControls(true);
+
+                if (photoPreview.srcObject)
+                    photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+
+                let cameraDevices = this.get('cameraDevices');
+                let comboSelection = this.get('selectedCameraIdx');
+        
+                let selectedCamera = cameraDevices[comboSelection];
+
+                let constraints = {
+                    video: {
+                        deviceId: selectedCamera.deviceId
+                    },
+                    audio: false
+                }
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        photoPreview.srcObject = stream;
+                    }, (err) => {
+                        console.log('User rejected camera permission');
+                    })
+            }
+
+            listDevices() {
+
+                navigator.mediaDevices.enumerateDevices()
+                    .then((devices) => {
+                        let cameras = [];
+                        devices.forEach((device) => {
+                            console.log(
+                                " deviceId = " + device.deviceId +
+                                " kind = " + device.kind +
+                                " label = " + device.label +
+                                " groupId = " + device.groupId
+                            );
+                            if (device.kind === 'videoinput') {
+                                cameras.push(device);
+                            }
+                        })
+                        this.set('cameraDevices', cameras);
+                    })
+
+            }
+
+            stopCamera(photoPreview) {
+                photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+            }
+
+            togglePhotoCaptureControls(showVideo) {
+                
+                this.$.photoCanvas.style.display = showVideo ? 'none' : 'block';
+                this.$.photoPreview.style.display = showVideo ? 'block' : 'none';
+
+            }
+
+            takePicture() {
+
+                const photoPreview = this.$.photoPreview;
+                const photoCanvas = this.$.photoCanvas;
+                const photoContext = photoCanvas.getContext('2d');
+
+                this.$.cameraShutterClick.play();
+
+                photoContext.drawImage(photoPreview, 0, 0, 
+                    photoCanvas.width, photoCanvas.height);
+
+                this.togglePhotoCaptureControls(false);
+                this.stopCamera(photoPreview);
+                
+            }
+
+
+
         }
 
         window.customElements.define(Memories.is, Memories);
