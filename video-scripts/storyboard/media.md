@@ -248,15 +248,163 @@ Ok switch cameras on startup:
 Add a takePicture function:
 
     takePicture() {
+        
         const photoPreview = this.$.photoPreview;
         const photoCanvas = this.$.photoCanvas;
         const photoContext = photoCanvas.getContext('2d');
 
         photoContext.drawImage(photoPreview, 0, 0, photoCanvas.width, photoCanvas.height);
         this.togglePhotoCaptureControls(false);
+        this.stopCamera(photoPreview);
 
-        this.stopCamera();
-
-        console.log(photoCanvas);
     }
 
+
+Stop camera:
+
+    stopCamera(photoPreview) {
+            photoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+    }
+
+## Video Diary
+
+Enhance listDevices:
+
+             listDevices() {
+
+                navigator.mediaDevices.enumerateDevices()
+                    .then((devices) => {
+                        let cameras = [];
+                        let microphones = [];
+                        devices.forEach((device) => {
+                            console.log(
+                                " deviceId = " + device.deviceId +
+                                " kind = " + device.kind +
+                                " label = " + device.label +
+                                " groupId = " + device.groupId
+                            );
+                            if (device.kind === 'videoinput') {
+                                cameras.push(device);
+                            }
+                            if (device.kind === 'audioinput') {
+                                microphones.push(device);
+                            }
+                        })
+                        this.set('cameraDevices', cameras);
+                        this.set('audioDevices', microphones);
+                    })
+
+            }
+
+Add some markup:
+
+    <div class="card">
+        <h1>Video Diary</h1>
+
+        <video id="videoPreview"></video>
+
+        <paper-dropdown-menu label="Camera Source">
+            <paper-listbox slot="dropdown-content" selected="{{selectedCameraIdx}}">
+                <template is="dom-repeat" items="[[cameraDevices]]">
+                    <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-dropdown-menu label="Audio Source">
+            <paper-listbox slot="dropdown-content" selected="{{selectedAudioIdx}}">
+                <template is="dom-repeat" items="[[audioDevices]]">
+                    <paper-item>[[item.label]] ([[item.deviceId]])</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-button raised class="orange" on-click="recordVideo">
+            <iron-icon icon="image:add-a-photo"></iron-icon>
+            Record Video
+        </paper-button>
+
+        </div>
+
+
+Then implement a record audio:
+
+    recordVideo() {
+
+                const videoPreview = this.$.videoPreview;
+
+                let cameraDevices = this.get('cameraDevices');
+                let cameraComboSelection = this.get('selectedCameraIdx');
+                let selectedCamera = cameraDevices[cameraComboSelection];
+
+                let audioDevices = this.get('audioDevices');
+                let audioComboSelection = this.get('selectedAudioIdx');
+                let selectedAudio = audioDevices[comboSelection];
+
+
+                let constraints = {
+                    video: {
+                        deviceId: selectedCamera.deviceId
+                    },
+                    audio: {
+                        deviceId: selectedAudio.deviceId
+                    }
+                }
+
+            }
+
+Start playback with mute:
+
+     navigator.mediaDevices.getUserMedia(constraints)
+                    .then((stream) => {
+                        videoPreview.srcObject = stream;
+
+                        // Not we mute so we don't get a mic feedback loop
+                        videoPreview.muted = true;
+
+                        // And we play to start the media streaming.
+                        videoPreview.play();
+
+Start API config:
+
+    var recordOptions = {
+                            audioBitsPerSecond : 128000,
+                            videoBitsPerSecond : 2500000,
+                            mimeType : 'video/webm'
+                        }
+
+Start recording:
+
+    var mediaRecorder = new MediaRecorder(stream, recordOptions);
+                        this.set('mediaRecorder', mediaRecorder);
+                        mediaRecorder.start(1000);
+
+On Data Available:
+
+                        let chunks = [];
+
+                        mediaRecorder.ondataavailable = function(e) {
+                             chunks.push(e.data);
+                        }   
+
+On Stop:
+
+    mediaRecorder.onstop = function(e) {
+
+        videoPreview.srcObject.getAudioTracks().forEach(track => track.stop());
+        videoPreview.srcObject.getVideoTracks().forEach(track => track.stop());
+        videoPreview.srcObject = null;
+    
+        videoPreview.muted = false;
+
+        let recordedVideo = self.get('recordedVideo');
+        console.log(recordedVideo);
+        var blob = new Blob(recordedVideo, { 'type' : 'video/webm' });
+        
+        videoPreview.src = URL.createObjectURL(blob);
+
+    }                                             
+
+Our video element:
+
+    <video id="videoPreview" controls></video>
