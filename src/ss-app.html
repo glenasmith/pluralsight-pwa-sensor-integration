@@ -46,7 +46,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
 <link rel="lazy-import" href="about/ss-about.html">
+<link rel="lazy-import" href="landmarks/ss-landmarks.html">
 <link rel="lazy-import" href="memories/ss-memories.html">
+
 
 
 
@@ -156,6 +158,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </paper-icon-item>
                         </a>
 
+                        <a href="[[rootPath]]landmarks" name="landmarks" tabindex="-1">
+                            <paper-icon-item>
+                                <iron-icon icon="explore" slot="item-icon"></iron-icon>
+                                <span>Landmarks</span>
+                            </paper-icon-item>
+                        </a>
+
+
                         <a href="[[rootPath]]about" name="about" tabindex="-1">
                             <paper-icon-item>
                                 <iron-icon icon="maps:local-florist" slot="item-icon"></iron-icon>
@@ -167,6 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-drawer>
                 <iron-pages id="router-outlet" selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
                     <ss-memories name="memories" fb-app="{{fbApp}}"></ss-memories>
+                    <ss-landmarks name="landmarks"></ss-landmarks>
                     <ss-404 name="404"></ss-404>
                 </iron-pages>
 

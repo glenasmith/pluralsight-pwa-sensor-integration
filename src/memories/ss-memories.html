@@ -353,12 +353,13 @@
                         let cameras = [];
                         let microphones = [];
                         devices.forEach((device) => {
+                            /*
                             console.log(
                                 " deviceId = " + device.deviceId +
                                 " kind = " + device.kind +
                                 " label = " + device.label +
                                 " groupId = " + device.groupId
-                            );
+                            );*/
                             if (device.kind === 'videoinput') {
                                 cameras.push(device);
                             }

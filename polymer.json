@@ -3,6 +3,7 @@
   "shell": "src/ss-app.html",
   "fragments": [
     "src/memories/ss-memories.html",
+    "src/landmarks/ss-landmarks.html",
     "src/404/ss-404.html"
   ],
   "sources": [
