@@ -29,6 +29,32 @@
         </style>
 
         <div class="card">
+
+            <h1>Find Coffee</h1>
+
+            <google-map id='coffeeMap' api-key="AIzaSyDMFQM5PWXsokAe7BfKSNKD_KJz5uWzyEk" map="{{map}}">
+                <template is="dom-repeat" items="{{results}}" as="marker">
+                    <google-map-marker latitude="{{marker.latitude}}" longitude="{{marker.longitude}}" on-click="goToCoffee">
+                        <h2>{{marker.name}}</h2>
+                        <p>{{marker.formatted_address}}</p>
+
+                    </google-map-marker>
+                </template>
+
+            </google-map>
+
+            <google-map-search id='gms' map="[[map]]" results="{{results}}">
+
+            </google-map-search>
+
+            <paper-button raised class="pink" on-click="findCoffee">
+                <iron-icon icon="maps:local-cafe"></iron-icon>
+                Find Coffee
+            </paper-button>
+        </div>
+
+
+        <div class="card">
             <h1>Map My Location</h1>
 
             <google-map id='gmap' api-key='AIzaSyDMFQM5PWXsokAe7BfKSNKD_KJz5uWzyEk'>
@@ -88,7 +114,7 @@
                         mapsApi.zoom = 15;
 
                         let marker = new google.maps.Marker({
-                            position: {lat: coords.latitude, lng: coords.longitude},
+                            position: { lat: coords.latitude, lng: coords.longitude },
                             title: 'Here you are!',
                             label: 'X',
                             map: mapsApi.map
@@ -106,6 +132,33 @@
 
                     }
                 )
+            }
+
+            findCoffee() {
+                var currentPosMarker;
+                let mapsApi = this.$.coffeeMap;
+
+                navigator.geolocation.watchPosition( (pos) => {
+
+                    if (!currentPosMarker) {
+
+                        mapsApi.latitude = pos.coords.latitude;
+                        mapsApi.longitude = pos.coords.longitude;
+                        mapsApi.zoom = 15;
+
+                        currentPosMarker = new google.maps.Marker({
+                            position: { lat: pos.coords.latitude, lng: pos.coords.longitude},
+                            label: 'U',
+                            map: mapsApi.map
+                        });
+
+                    } else {
+                        var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                        currentPosMarker.setPosition(latlng);
+                    }
+                }, (err) => {
+                    console.error(err);
+                });
             }
 
         }
