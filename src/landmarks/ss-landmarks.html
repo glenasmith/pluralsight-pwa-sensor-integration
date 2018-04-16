@@ -138,7 +138,7 @@
                 var currentPosMarker;
                 let mapsApi = this.$.coffeeMap;
 
-                navigator.geolocation.watchPosition( (pos) => {
+                navigator.geolocation.watchPosition((pos) => {
 
                     if (!currentPosMarker) {
 
@@ -147,10 +147,17 @@
                         mapsApi.zoom = 15;
 
                         currentPosMarker = new google.maps.Marker({
-                            position: { lat: pos.coords.latitude, lng: pos.coords.longitude},
+                            position: { lat: pos.coords.latitude, lng: pos.coords.longitude },
                             label: 'U',
                             map: mapsApi.map
                         });
+
+                        setTimeout(() => {
+                            let mapsSearch = this.$.gms;
+                            mapsSearch.types = "cafe";
+                            mapsSearch.query = "coffee";
+                            mapsSearch.search();
+                        }, 1000);
 
                     } else {
                         var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
