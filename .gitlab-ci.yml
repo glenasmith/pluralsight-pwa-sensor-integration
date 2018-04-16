@@ -19,3 +19,4 @@ pages:
   only:
   - master
   - start-recording
+  - record-in-progress

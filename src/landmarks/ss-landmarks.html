@@ -28,10 +28,30 @@
             }
         </style>
 
+        <div class="card">
+            <h1>Map My Location</h1>
+
+            <google-map id='gmap' api-key='AIzaSyDMFQM5PWXsokAe7BfKSNKD_KJz5uWzyEk'>
+
+            </google-map>
+
+            <paper-button raised class="indigo" on-click="getLocation">
+                <iron-icon icon="maps:my-location"></iron-icon>
+                Locate Me
+            </paper-button>
+        </div>
 
         <div class="card">
 
-            <h1>Landmarks</h1>
+            <h1>Where am I?</h1>
+
+            <div>
+                [[ positionInfo ]]
+            </div>
+
+            <paper-button raised class="green" on-click="getLocation">
+                <iron-icon icon="maps:my-location"></iron-icon> Locate Me
+            </paper-button>
 
         </div>
 
@@ -46,8 +66,46 @@
 
             static get properties() {
                 return {
-
+                    positionInfo: String
                 };
+            }
+
+            getLocation() {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        let coords = pos.coords;
+                        let info = `
+                            Lat: ${coords.latitude}
+                            Lng: ${coords.longitude}
+                            Alt: ${coords.altitude}
+                            Accuracy: ${coords.accuracy}
+                        `;
+                        this.set('positionInfo', info);
+
+                        let mapsApi = this.$.gmap;
+                        mapsApi.latitude = coords.latitude;
+                        mapsApi.longitude = coords.longitude;
+                        mapsApi.zoom = 15;
+
+                        let marker = new google.maps.Marker({
+                            position: {lat: coords.latitude, lng: coords.longitude},
+                            title: 'Here you are!',
+                            label: 'X',
+                            map: mapsApi.map
+                        });
+
+                        let richContent = `<div><h1>Welcome!</h1><pre>${info}</pre></div>`;
+                        let infowindow = new google.maps.InfoWindow({
+                            content: richContent
+                        });
+                        marker.addListener('click', () => {
+                            infowindow.open(mapsApi.map, marker);
+                        });
+
+
+
+                    }
+                )
             }
 
         }
