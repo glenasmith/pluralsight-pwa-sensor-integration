@@ -47,9 +47,14 @@
 
             </google-map-search>
 
-            <paper-button raised class="pink" on-click="findCoffee">
+            <paper-button raised class="pink" on-click="findCoffee" disabled="[[watchId]]">
                 <iron-icon icon="maps:local-cafe"></iron-icon>
                 Find Coffee
+            </paper-button>
+
+            <paper-button raised class="cyan" on-click="cancelFindCoffee" disabled="[[!watchId]]">
+                <iron-icon icon="maps:local-cafe"></iron-icon>
+                I'm done
             </paper-button>
         </div>
 
@@ -92,7 +97,12 @@
 
             static get properties() {
                 return {
-                    positionInfo: String
+                    positionInfo: String,
+                    results: Object,
+                    watchId: {
+                        type: Number,
+                        value: 0
+                    }
                 };
             }
 
@@ -138,7 +148,7 @@
                 var currentPosMarker;
                 let mapsApi = this.$.coffeeMap;
 
-                navigator.geolocation.watchPosition((pos) => {
+                let watchId = navigator.geolocation.watchPosition((pos) => {
 
                     if (!currentPosMarker) {
 
@@ -166,6 +176,13 @@
                 }, (err) => {
                     console.error(err);
                 });
+                this.set('watchId', watchId);
+            }
+
+            cancelFindCoffee() {
+                let watchId = this.get('watchId');
+                navigator.geolocation.clearWatch(watchId);
+                this.set('watchId', 0);
             }
 
         }
