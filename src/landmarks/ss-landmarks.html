@@ -29,6 +29,21 @@
         </style>
 
         <div class="card">
+            <h1>Simple Compass</h1>
+
+            <h3>[[ currentDirection ]]</h3>
+
+            <pre>
+[[ deviceOrientation ]]                
+            </pre>
+
+            <paper-button raised class="green" on-click="startCompass">
+                <iron-icon icon="maps:navigation"></iron-icon>
+                Start Compass
+            </paper-button>
+        </div>
+
+        <div class="card">
 
             <h1>Find Coffee</h1>
 
@@ -102,11 +117,19 @@
                     watchId: {
                         type: Number,
                         value: 0
-                    }
+                    },
+                    currentDirection: String,
+                    deviceOrientation: String
                 };
             }
 
             getLocation() {
+
+                if (!navigator.geolocation) {
+                    alert("Sorry, Geo is not supported on this browser.");
+                    return;
+                }
+
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
                         let coords = pos.coords;
@@ -137,9 +160,21 @@
                         marker.addListener('click', () => {
                             infowindow.open(mapsApi.map, marker);
                         });
-
-
-
+                    },
+                    (err) => {
+                        switch (err.code) {
+                            case 0: // unknown error
+                                console.log(err);
+                                alert("Unknown Geo Internal Error");
+                                break;
+                            case 1: // no permission yet
+                                alert("Please grant browser permission to use geo services");
+                                break;
+                            case 2: // no signal
+                            case 3: // timeout on geo lookup
+                                alert("No GPS signal available at this time");
+                                break;
+                        }
                     }
                 )
             }
@@ -183,6 +218,38 @@
                 let watchId = this.get('watchId');
                 navigator.geolocation.clearWatch(watchId);
                 this.set('watchId', 0);
+            }
+
+            startCompass() {
+                if (window.DeviceOrientationEvent) {
+                    window.addEventListener('deviceorientation', (evt) => {
+                        let orientation = ` Alpha: ${evt.alpha} \n Beta: ${evt.beta} \n Gamma ${evt.gamma}`;
+                        this.set('deviceOrientation', orientation);
+
+                        let direction = '';
+                        let deg = evt.alpha;
+                        if (deg < 15) {
+                            direction = 'North';
+                        } else if (deg < 60) {
+                            direction = 'North East';
+                        } else if (deg < 105) {
+                            direction = 'East'
+                        } else if (deg < 150) {
+                            direction = 'South East'
+                        } else if (deg < 195) {
+                            direction = 'South'
+                        } else if (deg < 240) {
+                            direction = 'South West'
+                        } else if (deg < 285) {
+                            direction = 'West'
+                        } else if (deg < 320) {
+                            direction = 'North West'
+                        } else {
+                            direction = 'North'
+                        }
+                        this.set('currentDirection', direction);
+                    })
+                }
             }
 
         }
