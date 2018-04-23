@@ -94,9 +94,7 @@ I'll add a bunch of markup to do polymer mapsy things:
                 </template>
 
         </google-map>
-        <google-map-directions id='gmd' map="[[map]]"
-                    api-key="AIzaSyDMFQM5PWXsokAe7BfKSNKD_KJz5uWzyEk">
-        </google-map-directions>
+        
         <google-map-search id='gms' map="[[map]]" results="{{results}}">
 
         </google-map-search>
@@ -151,3 +149,108 @@ THen I'll add the coffee house stuff (after marker creation):
                 }, 1000);
 
                 
+And handle the cancel of the timer:
+
+    <paper-button raised class="cyan" on-click="cancelFindCoffee" disabled="[[!watchId]]">
+        <iron-icon icon="maps:local-cafe"></iron-icon>
+        I'm done
+    </paper-button>
+
+With matching method:
+
+    cancelFindCoffee() {
+                let watchId = this.get('watchId');
+                navigator.geolocation.clearWatch(watchId);
+                this.set('watchId', 0);
+            }
+
+
+## Error handling
+
+Test for the presence of the API itself:
+
+    if (!navigator.geolocation) {
+        alert("Sorry, Geo is not supported on this device");
+        return;
+    }
+
+Update getLocation with a second arg:
+
+    (err) => {
+        switch(err.code) {
+            case 0:  // unknown error
+                console.log(err);
+                alert("Unknown Geo Internal Error");
+                break;
+            case 1: // no permission yet
+                alert("Please allow permission to use geo services");
+                break;
+            case 2: // no signal
+            case 3: // timeout on geo lookup
+                alert("No GPS signal available at this time");
+                break;
+                
+        }
+    }
+
+
+
+
+ ## Compass stuff
+
+ I'll add a card for it:
+
+    <div class="card">
+            <h1>Simple Compass</h1>
+
+            <h3>[[ currentDirection ]]</h3>
+
+            <pre>
+    [[ deviceOrientation ]]                
+            </pre>
+
+            <paper-button raised class="green" on-click="startCompass">
+                <iron-icon icon="maps:navigation"></iron-icon>
+                Start Compass
+            </paper-button>
+
+
+        </div>       
+
+Then implement the callback:
+
+startCompass() {
+
+                if (window.DeviceOrientationEvent) {
+                    window.addEventListener('deviceorientation', (evt) => {
+                        console.log('Hope', evt);
+                        let orientation = ` Alpha: ${evt.alpha} \n Beta: ${evt.beta} \n Gamma: ${evt.gamma}`;
+                        this.set('deviceOrientation', orientation)
+                    });
+                };                
+
+Put in the compass stuff:
+
+    let direction = '';
+    let deg = evt.alpha;
+    if (deg < 15) {
+        direction = 'North'
+    } else if (deg < 60) {
+        direction = 'North East'
+    } else if (deg < 105) {
+        direction = 'East'
+    } else if (deg < 150) {
+        direction = 'South East'
+    } else if (deg < 195) {
+        direction = 'South'
+    } else if (deg < 240) {
+        direction = 'South West'
+    } else if (deg < 285) {
+        direction = 'West'
+    } else if (deg < 320) {
+        direction = 'North West'
+    } else {
+        direction = 'North'
+    }
+    this.set('currentDirection', direction);
+                                        
