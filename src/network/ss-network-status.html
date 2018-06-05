@@ -1,0 +1,55 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="ss-network-status">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <span>
+        <iron-icon id="onlineIcon" icon="cloud" hidden$="[[!online]]"></iron-icon>
+        <iron-icon id="offlineIcon" icon="cloud-off" hidden$="[[online]]"></iron-icon>
+        <paper-tooltip for="onlineIcon">Online</paper-tooltip>
+        <paper-tooltip for="offlineIcon">Offline</paper-tooltip>
+    </span>
+
+    
+  </template>
+
+  <script>
+    class NetworkStatus extends Polymer.Element {
+
+      static get is() { return 'ss-network-status'; }
+
+      static get properties() {
+          return {    
+              online: {
+                  type: Boolean,
+                  value: false,
+                  notify: true
+              }
+
+          };
+      }
+
+      ready() {
+          super.ready();
+
+          this.set('online', navigator.onLine);
+
+          window.addEventListener('online', () => this.set('online', true));       
+          window.addEventListener('offline', () => this.set('online', false));
+      }
+
+    }
+
+    window.customElements.define(NetworkStatus.is, NetworkStatus);
+  </script>
+</dom-module>
