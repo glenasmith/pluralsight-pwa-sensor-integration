@@ -27,5 +27,14 @@ module.exports = {
         },
       },
     },
+    {
+      urlPattern: /^https:\/\/firebasestorage.*/,
+      handler: 'cacheFirst',
+      options: {
+        cache: {
+          name: 'firebase-image-cache',
+        },
+      }
+    }
   ],
 };

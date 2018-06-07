@@ -29,6 +29,23 @@
 
             <h1>Gallery</h1>
 
+            <firebase-query app="{{fbApp}}"
+                path="/photos"
+                data="{{photoList}}">
+            </firebase-query>
+            
+            <app-localstorage-document key="photoDocument" data="{{cachedPhotoList}}">
+
+            </app-localstorage-document>
+
+            <sl-gallery>
+                <template is="dom-repeat" items="{{cachedPhotoList}}" as="photoObj">
+
+                    <sl-gallery-image src="{{photoObj.url}}"></sl-gallery-image>
+
+                </template>
+            </sl-gallery>
+
         </div>
     </template>
 
@@ -40,6 +57,15 @@
 
             static get properties() {
                 return {
+                    fbApp: Object,
+                    photoList: {
+                        type: Object,
+                        observer: 'photoDataChanged'
+                    },
+                    cachedPhotoList: {
+                        type: Object,
+                        notify: true
+                    }
                     
                 };
             }
@@ -48,7 +74,13 @@
                 super.ready();
             }
 
-            
+            photoDataChanged(newData, oldData) {
+
+                if (newData && newData.length > 0) {
+                    this.set('cachedPhotoList', newData);
+                }
+
+            }
 
         }
 
