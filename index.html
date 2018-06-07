@@ -75,8 +75,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       * like `my.domain/my-app/` and `my.domain/my-app/view1`), edit this line
       * to indicate the path from which you'll be serving, including leading
       * and trailing slashes (e.g., `/my-app/`).
+      *
+      window.Polymer = {rootPath: '/'};
       */
-      window.Polymer = {rootPath: '{{base}}'};
 
       // Load and register pre-caching Service Worker
       if ('serviceWorker' in navigator) {
