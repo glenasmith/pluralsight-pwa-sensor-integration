@@ -9,6 +9,11 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-ref.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-upload-task.html">
+
 
 <link rel="import" href="cssgram.html">
 <link rel="import" href="ss-photo-filters.html">
@@ -186,6 +191,10 @@
 
             <div style="display: none;">
                 <input id="photoInput" type="file" accept="image/*" capture on-change="uploadPhoto">
+                <template is="dom-if" if="{{fsCurrentlyUploading}}">
+                    <paper-progress max="{{fsTotalBytes}}" value="{{fsBytesTransferred}}"></paper-progress>
+                    <div>Transferring {{fsBytesTransferred}} of {{fsTotalBytes}}  ({{fsState}})</div>
+                </template>
             </div>
 
             <template is="dom-if" if="[[showFilters]]">
@@ -197,6 +206,21 @@
 
         </div>
 
+    <firebase-storage-ref id="firebaseStorage"
+        app="{{fbApp}}"
+        path="{{fsPath}}"
+        metadata="{{fsMetadata}}"
+        storage-uri="{{fsStorage}}"
+        download-url="{{fsDownload}}">
+    </firebase-storage-ref>
+
+    <firebase-storage-upload-task
+            task="[[fsTask]]"
+            bytes-transferred="{{fsBytesTransferred}}"
+            total-bytes="{{fsTotalBytes}}"
+            state="{{fsState}}"
+            >
+    </firebase-storage-upload-task>
 
 
     </template>
@@ -242,6 +266,27 @@
                     audioDevices: {
                         type: Array,
                         value: []
+                    },
+                    fbApp: Object,
+                    fsMetadata: Object,
+                    fsPath: {
+                        type: String,
+                        value: '/photos',
+                    },
+                    fsStorage: {
+                        type: String,
+                        value: 'gs://sights-sounds-pwa.appspot.com/photos',
+                    },
+                    user: Object,
+                    fsDownload: String,
+                    toastText: String,
+                    fsTask: String,
+                    fsBytesTransferred: Number,
+                    fsTotalBytes: Number,
+                    fsState: Object,
+                    fsCurrentlyUploading: {
+                        type: Boolean,
+                        computed: 'computeUploading(fsState)'
                     }
                 };
             }
@@ -264,13 +309,47 @@
             }
 
 
+            computeUploading(fsState) {
+                return fsState == 'running';
+            }
+
             uploadPhoto(evt) {
+
+                var fbs = this.$.firebaseStorage;
+
                 var files = Array.from(evt.target.files);
                 if (files && files.length) {
                     var file = files[0];
                     var selfieUrl = URL.createObjectURL(file);
                     this.$.photo.src = selfieUrl;
                     this.set('selfieUrl', selfieUrl);
+                    
+                    // If we have firebase support, ship it off to the cloud
+                    if (this.get('user')) {
+                        fbs.log = true;
+                        console.log(fbs);
+                        var uploadTask = fbs.put(file);
+                        this.fsTask = uploadTask;
+
+                        uploadTask.then((snapshot) => {
+                            console.log(snapshot);
+                            var photoKey = this.get('fbApp').database().ref('photos/').push();
+                            snapshot.ref.getDownloadURL().then((downloadUrl) => {
+
+                                photoKey.set({
+                                    name: file.name,
+                                    size: file.size,
+                                    type: file.type,
+                                    url: downloadUrl
+                                });
+
+                            })
+
+
+                        });
+
+                        
+                    }
                 }
 
             }
