@@ -248,7 +248,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     subroute: String,
                     // This shouldn't be neccessary, but the Analyzer isn't picking up
                     // Polymer.Element#rootPath
-                    rootPath: String,
+                    rootPath: {
+                        type: String,
+                        value: document.querySelector('base').href
+                    },
                     signedIn: Boolean,
                     user: {
                         type: Object,
