@@ -248,10 +248,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     subroute: String,
                     // This shouldn't be neccessary, but the Analyzer isn't picking up
                     // Polymer.Element#rootPath
-                    rootPath: {
-                        type: String,
-                        value: null
-                    },
+                    rootPath: String,
                     signedIn: Boolean,
                     user: {
                         type: Object,
@@ -315,6 +312,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _pageChanged(page) {
                 // Load page import on demand. Show 404 page if fails
                 var resolvedPageUrl = this.resolveUrl(page + '/ss-' + page + '.html');
+                console.log(page);
                 Polymer.importHref(
                     resolvedPageUrl,
                     null,

@@ -18,9 +18,10 @@
     "test": "polymer test",
     "test:integration": "polymer build # test that psk builds without error with the CLI",
     "build": "polymer build",
-    "https": "http-server build/es6-bundled -p 8443 --ssl -C ssl/pc.wiredbraincoffee.com.crt -K ssl/pc.wiredbraincoffee.com.key ",
+    "https": "http-server build/ -p 8443 --ssl -C ssl/pc.wiredbraincoffee.com.crt -K ssl/pc.wiredbraincoffee.com.key ",
     "ssl": "polymer serve -p 8443 -H 192.168.1.147 --protocol https/1.1 --cert ssl/pc.wiredbraincoffee.com.crt --key ssl/pc.wiredbraincoffee.com.key -o -b chrome",
     "ssl-local": "polymer serve -p 8443 --protocol https/1.1 --cert ssl/pc.wiredbraincoffee.com.crt --key ssl/pc.wiredbraincoffee.com.key -o -b chrome",
-    "dist-gitlab": "shx cp -R build/es5-bundled public/"
+    "dist-gitlab": "shx cp -R build/es5-bundled public/",
+    "dist-local": "shx cp -R build/es5-bundled build/sights-sounds-pwa/"
   }
 }
