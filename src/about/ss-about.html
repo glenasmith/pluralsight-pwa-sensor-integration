@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/l2t-paper-rating/l2t-paper-rating.html">
 
 <dom-module id="ss-about">
     <template>
@@ -19,12 +20,28 @@
             #logo {
                 width: 100%;
             }
+
+            l2t-paper-rating {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50%;
+                padding-bottom: 2em;
+            }
  
         </style>
 
         <div class="card">
 
             <img id="logo" src="../../images/sights-sounds-logo.svg"/>
+
+            <l2t-paper-rating rating="{{ starRating }}"></l2t-paper-rating>
+            
+
+            <paper-button raised class="indigo" on-click="resetRating">
+                <iron-icon icon="icons:star"></iron-icon>
+                Reset Rating
+            </paper-button>
 
         </div>
     </template>
@@ -37,11 +54,19 @@
 
             static get properties() {
                 return {
+                    starRating: {
+                        type: Number,
+                        value: 4
+                    }
                 };
             }
 
             ready() {
                 super.ready();
+            }
+
+            resetRating() {
+                this.set('starRating', 5);
             }
 
         }

@@ -35,7 +35,8 @@
     "neon-animation": "PolymerElements/neon-animation#^2.2.0",
     "web-animations-js": "^2.3.1",
     "paper-card": "PolymerElements/paper-card#^2.1.0",
-    "sl-gallery": "jsilvermist/sl-gallery#^1.0.2"
+    "sl-gallery": "jsilvermist/sl-gallery#^1.0.2",
+    "l2t-paper-rating": "^2.0.4"
   },
   "resolutions": {
     "polymer": "^2.0.0"
