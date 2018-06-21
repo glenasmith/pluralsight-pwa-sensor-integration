@@ -22,20 +22,21 @@
             }
 
             l2t-paper-rating {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
                 padding-bottom: 2em;
+                display:block;
+                margin: 0 auto;
+                text-align: center;
             }
+            
  
         </style>
 
         <div class="card">
 
-            <img id="logo" src="../../images/sights-sounds-logo.svg"/>
+            <img id="logo" src="./images/sights-sounds-logo.svg"/>
 
             <l2t-paper-rating rating="{{ starRating }}"></l2t-paper-rating>
+            
             
 
             <paper-button raised class="indigo" on-click="resetRating">
