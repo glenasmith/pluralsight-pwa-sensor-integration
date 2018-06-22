@@ -49,6 +49,11 @@
                 Reset Rating
             </paper-button>
 
+            <paper-button raised class="pink" on-click="notifyBatteryLife" >
+                <iron-icon icon="icons:alarm"></iron-icon>
+                Notify Battery Life
+            </paper-button>
+
             <google-chart type="gauge" data="[[batteryChartData]]"></google-chart>
 
             <div hidden$="[[!charging]]">Charged in [[chargingTimeMinutes]] minutes</div>
@@ -64,7 +69,7 @@
                 return 'ss-about';
             }
 
-            static get properties() {
+           static get properties() {
                 return {
                     starRating: {
                         type: Number,
@@ -86,6 +91,28 @@
                 this.readBatteryStatus();
             }
 
+             notifyBatteryLife() {
+                const minutesLeft = this.get('dischargingTimeMinutes');
+                this.showBatteryLifeNotification(minutesLeft);
+            }
+
+            showBatteryLifeNotification(minutes) {
+                const title = "Battery Low";
+                const options = {
+                    body: `Only ${minutes} minutes of battery left`,
+                    icon: '/sights-sounds-pwa/images/manifest/icon-512x512.png',
+                    vibrate: [100,50,100,50,200]
+                }
+
+                Notification.requestPermission(result => {
+                    if (result === 'granted') {
+                        navigator.serviceWorker.ready.then( reg => {
+                            reg.showNotification(title, options);
+                        })
+                    }
+                })
+            }
+            
             readBatteryStatus() {
                 if ('getBattery' in navigator) {
                     navigator.getBattery().then( (batteryManager) => {
@@ -108,6 +135,12 @@
                         batteryManager.ondischargingtimechange= () => {
                             let minutesLeft = batteryManager.dischargingTime / 60;
                             this.set('dischargingTimeMinutes', minutesLeft);
+                            if (minutesLeft < 30) {
+                                // if ('vibrate' in navigator) {
+                                //     navigator.vibrate([100,50,100,50,200]);
+                                // }
+                                this.showBatteryLifeNotification(minutes);
+                            }
                         }
                     });
                 }
