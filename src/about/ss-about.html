@@ -51,6 +51,10 @@
 
             <google-chart type="gauge" data="[[batteryChartData]]"></google-chart>
 
+            <div hidden$="[[!charging]]">Charged in [[chargingTimeMinutes]] minutes</div>
+
+            <div hidden$="[[charging]]">Discharged in [[dischargingTimeMinutes]] minutes</div>
+
         </div>
     </template>
 
@@ -70,7 +74,10 @@
                     batteryChartData: {
                         type: Object,
                         computed: 'computeChartData(batteryLevel)'
-                    }
+                    },
+                    charging: Boolean,
+                    chargingTimeMinutes: Number,
+                    dischargingTimeMinutes: Number,
                 };
             }
 
@@ -83,6 +90,25 @@
                 if ('getBattery' in navigator) {
                     navigator.getBattery().then( (batteryManager) => {
                         this.set('batteryLevel', batteryManager.level);
+                        this.set('charging', batteryManager.charging);
+                        this.set('chargingTimeMinutes', Number.isFinite(batteryManager.chargingTime) ? batteryManager.chargingTime / 60 :0);
+                        this.set('dischargingTimeMinutes', Number.isFinite(batteryManager.dischargingTime) ? batteryManager.dischargingTime / 60 :0);
+
+
+                        batteryManager.onlevelchange = () => {
+                            this.set('batteryLevel', batteryManager.level);
+                        }
+                        batteryManager.onchargingchange = () => {
+                            this.set('charging', batteryManager.charging);
+                        }
+                        batteryManager.onchargingtimechange= () => {
+                            let minutesLeft = batteryManager.chargingTime / 60;
+                            this.set('chargingTimeMinutes', minutesLeft);
+                        }
+                        batteryManager.ondischargingtimechange= () => {
+                            let minutesLeft = batteryManager.dischargingTime / 60;
+                            this.set('dischargingTimeMinutes', minutesLeft);
+                        }
                     });
                 }
             }
