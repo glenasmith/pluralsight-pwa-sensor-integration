@@ -97,7 +97,7 @@
 
              notifyBatteryLife() {
                 const minutesLeft = this.get('dischargingTimeMinutes');
-                this.showBatteryLifeNotification(201.6);
+                this.showBatteryLifeNotification(minutesLeft);
             }
 
             showBatteryLifeNotification(minutes) {
