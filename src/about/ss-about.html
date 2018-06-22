@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/l2t-paper-rating/l2t-paper-rating.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
 
 <dom-module id="ss-about">
     <template>
@@ -27,6 +28,12 @@
                 margin: 0 auto;
                 text-align: center;
             }
+
+            google-chart {
+                width: 100%;
+                padding-top: 2em;
+                padding-bottom: 2em;
+            }
             
  
         </style>
@@ -36,13 +43,13 @@
             <img id="logo" src="./images/sights-sounds-logo.svg"/>
 
             <l2t-paper-rating rating="{{ starRating }}"></l2t-paper-rating>
-            
-            
 
             <paper-button raised class="indigo" on-click="resetRating">
                 <iron-icon icon="icons:star"></iron-icon>
                 Reset Rating
             </paper-button>
+
+            <google-chart type="gauge" data="[[batteryChartData]]"></google-chart>
 
         </div>
     </template>
@@ -58,12 +65,33 @@
                     starRating: {
                         type: Number,
                         value: 4
+                    },
+                    batteryLevel: Number,
+                    batteryChartData: {
+                        type: Object,
+                        computed: 'computeChartData(batteryLevel)'
                     }
                 };
             }
 
             ready() {
                 super.ready();
+                this.readBatteryStatus();
+            }
+
+            readBatteryStatus() {
+                if ('getBattery' in navigator) {
+                    navigator.getBattery().then( (batteryManager) => {
+                        this.set('batteryLevel', batteryManager.level);
+                    });
+                }
+            }
+
+            computeChartData(batteryLevel) {
+                return [
+                    ["Label", "Value"],
+                    ["Battery", batteryLevel * 100]
+                ];
             }
 
             resetRating() {
