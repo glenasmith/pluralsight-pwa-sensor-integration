@@ -1,4 +1,4 @@
-# Pluralsight Progressive Web App Sensors
+# Pluralsight Progressive Web App Sensor Integration
 
 This is the sample app that goes with my Pluralsight Course.
 
